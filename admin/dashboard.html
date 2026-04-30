@@ -72,6 +72,26 @@
                 </div>
             </div>
 
+            <h2 class="mb-2 mt-4" style="font-size: 1.2rem; color: var(--text);">Visitor Tracking (Traffic)</h2>
+            <div class="stats-grid" style="margin-bottom: 1.5rem;">
+                <div class="stat-card" style="border-left: 4px solid var(--primary);">
+                    <span class="stat-label">Today (Unique / Hits)</span>
+                    <span id="visitToday" class="stat-value" style="font-size: 1.5rem; color: var(--primary);">0 / 0</span>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid #f59e0b;">
+                    <span class="stat-label">Yesterday (Unique / Hits)</span>
+                    <span id="visitYesterday" class="stat-value" style="font-size: 1.5rem;">0 / 0</span>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid var(--success);">
+                    <span class="stat-label">Last 7 Days (Unique)</span>
+                    <span id="visitWeekly" class="stat-value" style="color: var(--success);">0</span>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid var(--danger);">
+                    <span class="stat-label">Last 30 Days (Unique)</span>
+                    <span id="visitMonthly" class="stat-value" style="color: var(--danger);">0</span>
+                </div>
+            </div>
+
             <div class="grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
                 <div class="card">
                     <h3>Recent Posts</h3>
@@ -159,6 +179,18 @@
                     `).join('')
                     : '<p style="color: var(--text-muted); font-size: 0.9rem;">No department data available.</p>';
             }
+
+            // Load Visit Stats
+            try {
+                const visitRes = await api.getVisitStats();
+                if (visitRes && visitRes.success) {
+                    const v = visitRes.data;
+                    document.getElementById('visitToday').innerText = `${v.today.unique} / ${v.today.hits}`;
+                    document.getElementById('visitYesterday').innerText = `${v.yesterday.unique} / ${v.yesterday.hits}`;
+                    document.getElementById('visitWeekly').innerText = v.weekly.unique;
+                    document.getElementById('visitMonthly').innerText = v.monthly.unique;
+                }
+            } catch(e) { console.error('Error loading visit stats', e); }
         }
 
         loadDashboard();

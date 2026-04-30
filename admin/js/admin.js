@@ -51,6 +51,10 @@ const api = {
         return this.request('/stats');
     },
 
+    getVisitStats() {
+        return this.request('/visits/stats');
+    },
+
     getPosts(page = 1, search = '', category = '') {
         return this.request(`/posts?page=${page}&search=${search}&category=${category}`);
     },
