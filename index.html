@@ -1392,56 +1392,7 @@
         Clear</button>
     </div>
 
-    <!-- JOB DETAIL MODAL -->
-    <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content" style="border:3px solid var(--blue); border-radius:10px;">
-          <div class="modal-header" style="background:var(--blue); color:#fff;">
-            <h5 class="modal-title" id="detailTitle">Job Details</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body" id="detailBody" style="background:#fff;">
-            <!-- Content will be injected by main.js -->
-            <div class="text-center p-5">
-              <div class="spinner-border text-primary" role="status"></div>
-              <p class="mt-2">Fetching job details...</p>
-            </div>
-          </div>
-          <!-- Modal Ad Placeholder -->
-          <div id="ad-modal" class="text-center p-2" style="background:#f8faff; border-top:1px solid #eee;"></div>
-          <div class="modal-footer" style="background:#f8faff;">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close Window</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <style>
-      .detail-card-head { background: #f0f4ff; padding: 10px; border-left: 5px solid var(--blue); margin-bottom: 15px; font-weight: 800; color: var(--blue-dark); font-size: 16px; }
-      .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-      .detail-item { background: #fdfdfd; border: 1px solid #eee; padding: 10px; border-radius: 5px; }
-      .detail-label { font-size: 11px; color: #777; text-transform: uppercase; font-weight: 700; margin-bottom: 3px; }
-      .detail-value { font-size: 14px; font-weight: 700; color: var(--text); }
-      .vacancy-table { width: 100%; border: 1.5px solid #ddd; margin-top: 10px; }
-      .vacancy-table th { background: #eee; font-size: 12px; padding: 8px; text-align: center; border: 1px solid #ddd; }
-      .vacancy-table td { font-size: 13px; padding: 8px; text-align: center; border: 1px solid #ddd; font-weight: 600; }
-      .link-btn { display: inline-block; background: var(--red); color: #fff; padding: 8px 20px; border-radius: 5px; text-decoration: none; font-weight: 800; margin: 5px; transition: 0.2s; border: none; }
-      .link-btn:hover { background: var(--red-dark); color: #fff; transform: scale(1.05); }
-      .link-btn.blue { background: var(--blue); }
-    </style>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-    <script>
-      // Initialize the modal
-      let detailModal;
-      document.addEventListener('DOMContentLoaded', () => {
-        detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
-      });
-      
-      function openDetailModal() {
-        if(detailModal) detailModal.show();
-      }
-    </script>
     <script>
       // Duplication for ticker loop is now handled in main.js or CSS if needed, 
       // but let's keep a simple version here for immediate effect if main.js is slow
