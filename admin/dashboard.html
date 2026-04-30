@@ -78,6 +78,7 @@
                                     <th>Title</th>
                                     <th>Category</th>
                                     <th>Date</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="recentPostsTable">
@@ -116,6 +117,11 @@
                         <td>${post.title}</td>
                         <td><span style="background: rgba(99,102,241,0.1); padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">${post.category}</span></td>
                         <td style="color: var(--text-muted); font-size: 0.85rem;">${new Date(post.createdAt).toLocaleDateString()}</td>
+                        <td>
+                            <a href="posts.html?edit=${post._id}" class="btn" style="padding: 4px 8px; background: rgba(255,255,255,0.05); color: var(--primary);">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                        </td>
                     </tr>
                 `).join('');
 

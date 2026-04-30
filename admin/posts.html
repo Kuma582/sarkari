@@ -307,7 +307,19 @@
         document.getElementById('searchInput').addEventListener('input', fetchPosts);
         document.getElementById('categoryFilter').addEventListener('change', fetchPosts);
 
-        fetchPosts();
+        // Auto-open edit modal if ID is in URL
+        async function checkUrlParams() {
+            await fetchPosts(); // Ensure posts are loaded first
+            const urlParams = new URLSearchParams(window.location.search);
+            const editId = urlParams.get('edit');
+            if (editId) {
+                editPost(editId);
+                // Clean up URL without refreshing
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+
+        checkUrlParams();
     </script>
 </body>
 </html>
