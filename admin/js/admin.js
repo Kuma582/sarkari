@@ -35,7 +35,7 @@ const api = {
             return data;
         } catch (error) {
             console.error('API Error:', error);
-            return { success: false, message: 'Server connection failed' };
+            return { success: false, message: `Connection Error: ${error.message}` };
         }
     },
 
