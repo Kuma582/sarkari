@@ -53,18 +53,10 @@
                 </div>
             </header>
 
-            <div class="stats-grid">
+            <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
                 <div class="stat-card">
                     <span class="stat-label">Total Posts</span>
                     <span id="totalPosts" class="stat-value">0</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-label">Total Vacancy</span>
-                    <span id="totalVacancySum" class="stat-value">0</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-label">Male / Female</span>
-                    <span id="vacancyGender" class="stat-value" style="font-size: 1.5rem;">0 / 0</span>
                 </div>
                 <div class="stat-card">
                     <span class="stat-label">Total Users</span>
@@ -140,9 +132,7 @@
                 document.getElementById('totalPosts').innerText = totalPosts;
                 document.getElementById('totalUsers').innerText = totalUsers;
                 
-                const { vacancyTotals, departmentStats } = res.data;
-                document.getElementById('totalVacancySum').innerText = vacancyTotals.totalVacancies || 0;
-                document.getElementById('vacancyGender').innerText = `${vacancyTotals.maleVacancies || 0} / ${vacancyTotals.femaleVacancies || 0}`;
+                const { departmentStats } = res.data;
 
                 // Recent Posts Table
                 const recentTable = document.getElementById('recentPostsTable');

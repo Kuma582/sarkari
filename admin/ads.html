@@ -127,8 +127,15 @@
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 220px; gap: 1.5rem; align-items: start;">
                         <div class="form-group">
-                            <label>Popup Ad HTML Code (Image, Google Ads, ya kuch bhi paste karo)</label>
-                            <textarea id="popup_code" class="form-control" rows="7" placeholder="Paste popup ad HTML code here... e.g. <img src='...' style='width:100%'> ya Google AdSense code"></textarea>
+                            <label>Direct Upload Image / Video for Popup Ad</label>
+                            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                <input type="file" id="popup_file" accept="image/*,video/*" class="form-control" style="padding: 6px;">
+                                <button onclick="uploadPopupMedia()" class="btn btn-primary" style="flex-shrink: 0;"><i class="fas fa-upload"></i> Upload</button>
+                            </div>
+                            <small id="uploadStatus" style="color: var(--success); display: none; font-weight: 600; margin-bottom: 10px;">Uploaded successfully!</small>
+
+                            <label style="margin-top: 15px;">Or Paste Custom HTML Code (Google Ads, etc.)</label>
+                            <textarea id="popup_code" class="form-control" rows="5" placeholder="If not uploading a file, paste HTML code here..."></textarea>
                         </div>
                         <div>
                             <div class="form-group">
@@ -202,6 +209,61 @@
                 sel.addEventListener('change', () => { prev.innerText = sel.value + 's'; });
             }
         });
+
+        async function uploadPopupMedia() {
+            const fileInput = document.getElementById('popup_file');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('Please select a file first.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('media', file);
+
+            const status = document.getElementById('uploadStatus');
+            status.innerText = 'Uploading... Please wait.';
+            status.style.display = 'block';
+            status.style.color = 'var(--text-muted)';
+
+            try {
+                // Fetch the API directly because admin.js request doesn't easily handle FormData right now without tweaking
+                const token = localStorage.getItem('adminToken');
+                const cacheBuster = `t=${Date.now()}`;
+                
+                const response = await fetch(`${API_URL}/ads/upload?${cacheBuster}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+                
+                const res = await response.json();
+                
+                if (res && res.success) {
+                    status.innerText = 'Uploaded successfully!';
+                    status.style.color = 'var(--success)';
+                    
+                    let htmlCode = '';
+                    if (file.type.startsWith('video/')) {
+                        htmlCode = `<video src="${res.url}" autoplay loop muted style="max-width: 100%; border-radius: 8px;"></video>`;
+                    } else {
+                        htmlCode = `<img src="${res.url}" style="max-width: 100%; border-radius: 8px;">`;
+                    }
+
+                    document.getElementById('popup_code').value = htmlCode;
+                    
+                    // Note: User can still hit save settings. Or we can auto save
+                } else {
+                    status.innerText = 'Upload failed: ' + (res ? res.message : 'Error');
+                    status.style.color = 'var(--danger)';
+                }
+            } catch (err) {
+                status.innerText = 'Upload error.';
+                status.style.color = 'var(--danger)';
+            }
+        }
 
         loadAds();
     </script>
