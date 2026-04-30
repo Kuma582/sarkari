@@ -210,6 +210,58 @@ async function showPostDetail(id) {
     window.location.href = `post.html?id=${id}`;
 }
 window.showPostDetail = showPostDetail;
+let categoryModalInstance;
+document.addEventListener('DOMContentLoaded', () => {
+    const modalEl = document.getElementById('categoryModal');
+    if (modalEl && typeof bootstrap !== 'undefined') {
+        categoryModalInstance = new bootstrap.Modal(modalEl);
+    }
+});
+
+async function openCategoryModal(category) {
+    if(!categoryModalInstance && typeof bootstrap !== 'undefined') {
+        const modalEl = document.getElementById('categoryModal');
+        if (modalEl) categoryModalInstance = new bootstrap.Modal(modalEl);
+    }
+    
+    if(!categoryModalInstance) return;
+
+    document.getElementById('categoryModalTitle').innerText = category;
+    const listEl = document.getElementById('categoryModalList');
+    listEl.innerHTML = '<div class="text-center p-4"><div class="spinner-border text-primary" role="status"></div></div>';
+    categoryModalInstance.show();
+
+    // Ensure we have posts loaded
+    if (!window.allPosts || window.allPosts.length === 0) {
+        const res = await fetchData('/posts');
+        if (res && res.success) {
+            window.allPosts = res.data.filter(post => post.status === 'published');
+        } else {
+            listEl.innerHTML = `<li style="padding: 15px; text-align: center; color: var(--danger);">Failed to load posts.</li>`;
+            return;
+        }
+    }
+
+    // Filter posts
+    const posts = window.allPosts.filter(p => p.category === category || p.category + 's' === category || category.includes(p.category));
+
+    if (posts.length === 0) {
+        listEl.innerHTML = `<li style="padding: 15px; text-align: center; color: #666;">No posts available in ${category} right now.</li>`;
+        return;
+    }
+
+    listEl.innerHTML = posts.map(post => {
+        const isNew = isDateWithin24Hours(post.createdAt) ? '<span class="new-badge">★NEW</span>' : '';
+        return `
+            <li>
+                <a href="javascript:void(0)" onclick="showPostDetail('${post._id}')">
+                    <i class="fas fa-hand-point-right"></i> ${post.title} ${isNew}
+                </a>
+            </li>
+        `;
+    }).join('');
+}
+window.openCategoryModal = openCategoryModal;
 
 
 // Initialize all
