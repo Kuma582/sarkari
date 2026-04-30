@@ -16,10 +16,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Configure CORS for production
-app.use(cors()); // Allow all origins for troubleshooting
+app.use(cors()); 
+
+// Root route for API testing
+app.get('/api', (req, res) => {
+  res.json({ message: 'Sarkari API is running!' });
+});
 
 app.use(helmet({
-  crossOriginResourcePolicy: false, // Allow images to be loaded cross-origin
+  crossOriginResourcePolicy: false, 
 }));
 app.set('trust proxy', 1); // Trust first proxy (Render)
 app.use(morgan('dev'));
