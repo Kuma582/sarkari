@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Posts - Sarkari Result Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2 style="margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.8rem;">
+                <i class="fas fa-user-shield text-primary"></i> Admin
+            </h2>
+            <nav>
+                <ul style="list-style: none;">
+                    <li style="margin-bottom: 0.5rem;">
+                        <a href="dashboard.html" class="btn" style="width: 100%; justify-content: flex-start; color: var(--text-muted);">
+                            <i class="fas fa-home"></i> Dashboard
+                        </a>
+                    </li>
+                    <li style="margin-bottom: 0.5rem;">
+                        <a href="posts.html" class="btn" style="width: 100%; justify-content: flex-start; background: rgba(99, 102, 241, 0.1); color: var(--primary);">
+                            <i class="fas fa-file-invoice"></i> Manage Posts
+                        </a>
+                    </li>
+                    <li style="margin-bottom: 0.5rem;">
+                        <a href="ads.html" class="btn" style="width: 100%; justify-content: flex-start; color: var(--text-muted);">
+                            <i class="fas fa-ad"></i> Manage Ads
+                        </a>
+                    </li>
+                    <li style="margin-top: 3rem;">
+                        <button onclick="logout()" class="btn" style="width: 100%; justify-content: flex-start; color: var(--danger);">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="flex justify-between items-center mb-4">
+                <h1>Job Posts</h1>
+                <button onclick="openModal()" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> New Post
+                </button>
+            </header>
+
+            <div class="card">
+                <div class="flex gap-2 mb-4">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search posts..." style="max-width: 300px;">
+                    <select id="categoryFilter" class="form-control" style="max-width: 200px;">
+                        <option value="">All Categories</option>
+                        <option>Latest Jobs</option>
+                        <option>Results</option>
+                        <option>Admit Cards</option>
+                        <option>Answer Keys</option>
+                        <option>Syllabus</option>
+                        <option>Admission</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="postsTableBody">
+                            <!-- Posts will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Add/Edit -->
+    <div id="postModal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 2rem;">
+        <div class="card" style="width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="modalTitle">Add New Post</h2>
+                <button onclick="closeModal()" class="btn" style="background: transparent; color: var(--text-muted);"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="postForm">
+                <input type="hidden" id="postId">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" id="title" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="category" class="form-control" required>
+                            <option>Latest Jobs</option>
+                            <option>Results</option>
+                            <option>Admit Cards</option>
+                            <option>Answer Keys</option>
+                            <option>Syllabus</option>
+                            <option>Admission</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="description" class="form-control" rows="4" required></textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Last Date</label>
+                        <input type="date" id="lastDate" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Scheduled At</label>
+                        <input type="datetime-local" id="scheduledAt" class="form-control">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Image Upload</label>
+                        <input type="file" id="imageFile" class="form-control" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label>PDF Upload</label>
+                        <input type="file" id="pdfFile" class="form-control" accept="application/pdf">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Important Links (JSON format: [{"label":"Apply","url":"..."}])</label>
+                    <textarea id="importantLinks" class="form-control" placeholder='[{"label":"Apply","url":"http://..."}]'></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">Save Post</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+    <script>
+        let currentPosts = [];
+
+        async function fetchPosts() {
+            const search = document.getElementById('searchInput').value;
+            const category = document.getElementById('categoryFilter').value;
+            const res = await api.getPosts(1, search, category);
+            if (res && res.success) {
+                currentPosts = res.data;
+                renderPosts();
+            }
+        }
+
+        function renderPosts() {
+            const tbody = document.getElementById('postsTableBody');
+            tbody.innerHTML = currentPosts.map(post => `
+                <tr>
+                    <td>${post.title}</td>
+                    <td><span style="background: rgba(99,102,241,0.1); padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">${post.category}</span></td>
+                    <td style="font-size: 0.85rem;">${new Date(post.postDate).toLocaleDateString()}</td>
+                    <td><span style="color: ${post.isEnabled ? 'var(--success)' : 'var(--danger)'};">${post.isEnabled ? 'Active' : 'Disabled'}</span></td>
+                    <td>
+                        <div class="flex gap-2">
+                            <button onclick="editPost('${post._id}')" class="btn" style="padding: 4px 8px; background: rgba(255,255,255,0.05);"><i class="fas fa-edit text-primary"></i></button>
+                            <button onclick="deletePost('${post._id}')" class="btn" style="padding: 4px 8px; background: rgba(255,255,255,0.05);"><i class="fas fa-trash text-danger"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openModal() {
+            document.getElementById('postForm').reset();
+            document.getElementById('postId').value = '';
+            document.getElementById('modalTitle').innerText = 'Add New Post';
+            document.getElementById('postModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('postModal').style.display = 'none';
+        }
+
+        function editPost(id) {
+            const post = currentPosts.find(p => p._id === id);
+            if (!post) return;
+            
+            document.getElementById('postId').value = post._id;
+            document.getElementById('title').value = post.title;
+            document.getElementById('category').value = post.category;
+            document.getElementById('description').value = post.description;
+            if (post.lastDate) document.getElementById('lastDate').value = post.lastDate.split('T')[0];
+            if (post.scheduledAt) document.getElementById('scheduledAt').value = post.scheduledAt.substring(0, 16);
+            document.getElementById('importantLinks').value = JSON.stringify(post.importantLinks);
+            
+            document.getElementById('modalTitle').innerText = 'Edit Post';
+            document.getElementById('postModal').style.display = 'flex';
+        }
+
+        async function deletePost(id) {
+            if (confirm('Are you sure you want to delete this post?')) {
+                const res = await api.deletePost(id);
+                if (res && res.success) fetchPosts();
+            }
+        }
+
+        document.getElementById('postForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('postId').value;
+            const formData = new FormData();
+            
+            formData.append('title', document.getElementById('title').value);
+            formData.append('category', document.getElementById('category').value);
+            formData.append('description', document.getElementById('description').value);
+            formData.append('lastDate', document.getElementById('lastDate').value);
+            formData.append('scheduledAt', document.getElementById('scheduledAt').value);
+            formData.append('importantLinks', document.getElementById('importantLinks').value || '[]');
+
+            const imageFile = document.getElementById('imageFile').files[0];
+            const pdfFile = document.getElementById('pdfFile').files[0];
+            if (imageFile) formData.append('image', imageFile);
+            if (pdfFile) formData.append('pdf', pdfFile);
+
+            let res;
+            if (id) {
+                res = await api.updatePost(id, formData);
+            } else {
+                res = await api.createPost(formData);
+            }
+
+            if (res && res.success) {
+                closeModal();
+                fetchPosts();
+            } else {
+                alert(res ? res.message : 'Operation failed');
+            }
+        });
+
+        document.getElementById('searchInput').addEventListener('input', fetchPosts);
+        document.getElementById('categoryFilter').addEventListener('change', fetchPosts);
+
+        fetchPosts();
+    </script>
+</body>
+</html>

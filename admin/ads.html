@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Ads - Sarkari Result Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2 style="margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.8rem;">
+                <i class="fas fa-user-shield text-primary"></i> Admin
+            </h2>
+            <nav>
+                <ul style="list-style: none;">
+                    <li style="margin-bottom: 0.5rem;">
+                        <a href="dashboard.html" class="btn" style="width: 100%; justify-content: flex-start; color: var(--text-muted);">
+                            <i class="fas fa-home"></i> Dashboard
+                        </a>
+                    </li>
+                    <li style="margin-bottom: 0.5rem;">
+                        <a href="posts.html" class="btn" style="width: 100%; justify-content: flex-start; color: var(--text-muted);">
+                            <i class="fas fa-file-invoice"></i> Manage Posts
+                        </a>
+                    </li>
+                    <li style="margin-bottom: 0.5rem;">
+                        <a href="ads.html" class="btn" style="width: 100%; justify-content: flex-start; background: rgba(99, 102, 241, 0.1); color: var(--primary);">
+                            <i class="fas fa-ad"></i> Manage Ads
+                        </a>
+                    </li>
+                    <li style="margin-top: 3rem;">
+                        <button onclick="logout()" class="btn" style="width: 100%; justify-content: flex-start; color: var(--danger);">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="flex justify-between items-center mb-4">
+                <h1>Advertisement Management</h1>
+            </header>
+
+            <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
+                <!-- Header Ad -->
+                <div class="card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3>Header Ad Code</h3>
+                        <label class="switch-container">
+                            <input type="checkbox" id="header_enabled" onchange="updateAd('header')">
+                            <span>Enable</span>
+                        </label>
+                    </div>
+                    <textarea id="header_code" class="form-control" rows="6" placeholder="Paste Google AdSense or Custom Ad code here..."></textarea>
+                    <button onclick="updateAd('header')" class="btn btn-primary mt-4">Update Header Ad</button>
+                </div>
+
+                <!-- Sidebar Ad -->
+                <div class="card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3>Sidebar Ad Code</h3>
+                        <label class="switch-container">
+                            <input type="checkbox" id="sidebar_enabled" onchange="updateAd('sidebar')">
+                            <span>Enable</span>
+                        </label>
+                    </div>
+                    <textarea id="sidebar_code" class="form-control" rows="6" placeholder="Paste code here..."></textarea>
+                    <button onclick="updateAd('sidebar')" class="btn btn-primary mt-4">Update Sidebar Ad</button>
+                </div>
+
+                <!-- Between Posts Ad -->
+                <div class="card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3>Between Posts Ad Code</h3>
+                        <label class="switch-container">
+                            <input type="checkbox" id="between_posts_enabled" onchange="updateAd('between_posts')">
+                            <span>Enable</span>
+                        </label>
+                    </div>
+                    <textarea id="between_posts_code" class="form-control" rows="6" placeholder="Paste code here..."></textarea>
+                    <button onclick="updateAd('between_posts')" class="btn btn-primary mt-4">Update Between Posts Ad</button>
+                </div>
+
+                <!-- Footer Ad -->
+                <div class="card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3>Footer Ad Code</h3>
+                        <label class="switch-container">
+                            <input type="checkbox" id="footer_enabled" onchange="updateAd('footer')">
+                            <span>Enable</span>
+                        </label>
+                    </div>
+                    <textarea id="footer_code" class="form-control" rows="6" placeholder="Paste code here..."></textarea>
+                    <button onclick="updateAd('footer')" class="btn btn-primary mt-4">Update Footer Ad</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/admin.js"></script>
+    <script>
+        async function loadAds() {
+            const res = await api.getAds();
+            if (res && res.success) {
+                res.data.forEach(ad => {
+                    const codeArea = document.getElementById(`${ad.location}_code`);
+                    const enabledCheck = document.getElementById(`${ad.location}_enabled`);
+                    if (codeArea) codeArea.value = ad.code;
+                    if (enabledCheck) enabledCheck.checked = ad.isEnabled;
+                });
+            }
+        }
+
+        async function updateAd(location) {
+            const code = document.getElementById(`${location}_code`).value;
+            const isEnabled = document.getElementById(`${location}_enabled`).checked;
+            
+            const res = await api.updateAd(location, code, isEnabled);
+            if (res && res.success) {
+                alert(`${location.charAt(0).toUpperCase() + location.slice(1)} Ad updated successfully!`);
+            } else {
+                alert('Failed to update ad');
+            }
+        }
+
+        loadAds();
+    </script>
+</body>
+</html>
