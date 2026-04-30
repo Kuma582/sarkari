@@ -60,8 +60,8 @@ async function renderLatestJobs(page = 1) {
         }
 
         tbody.innerHTML = res.data.map(post => `
-            <tr>
-                <td><a href="#">${post.title}${post.status === 'New' ? '<span class="new-label ms-1">NEW</span>' : ''}</a></td>
+            <tr onclick="showPostDetail('${post._id}')" style="cursor:pointer;">
+                <td><a href="javascript:void(0)">${post.title}${post.status === 'New' ? '<span class="new-label ms-1">NEW</span>' : ''}</a></td>
                 <td><span class="badge-blue">${post.category}</span></td>
                 <td>-</td>
                 <td style="color:var(--red);font-weight:700;">${post.lastDate ? new Date(post.lastDate).toLocaleDateString() : 'N/A'}</td>
@@ -87,10 +87,10 @@ async function renderCategoryList(category, elementId) {
         }
 
         container.innerHTML = res.data.map(post => `
-            <li>
+            <li onclick="showPostDetail('${post._id}')" style="cursor:pointer;">
                 <div class="bullet"></div>
                 <div>
-                    <a href="#">${post.title}</a>
+                    <a href="javascript:void(0)">${post.title}</a>
                     <div class="job-meta">${post.description.substring(0, 50)}...</div>
                 </div>
                 ${post.status === 'New' ? '<span class="new-label">NEW</span>' : ''}
@@ -122,7 +122,7 @@ async function renderTicker() {
         if (!ticker) return;
 
         ticker.innerHTML = res.data.map(post => `
-            <a href="#">${post.title}${post.status === 'New' ? '<span class="new-badge">★NEW</span>' : ''}</a>
+            <a href="javascript:void(0)" onclick="showPostDetail('${post._id}')">${post.title}${post.status === 'New' ? '<span class="new-badge">★NEW</span>' : ''}</a>
         `).join('');
         
         // Restart animation if needed
@@ -155,8 +155,8 @@ async function doSearch() {
         }
 
         tbody.innerHTML = res.data.map(post => `
-            <tr>
-                <td><a href="#">${post.title}${post.status === 'New' ? '<span class="new-label ms-1">NEW</span>' : ''}</a></td>
+            <tr onclick="showPostDetail('${post._id}')" style="cursor:pointer;">
+                <td><a href="javascript:void(0)">${post.title}${post.status === 'New' ? '<span class="new-label ms-1">NEW</span>' : ''}</a></td>
                 <td><span class="badge-blue">${post.category}</span></td>
                 <td>-</td>
                 <td style="color:var(--red);font-weight:700;">${post.lastDate ? new Date(post.lastDate).toLocaleDateString() : 'N/A'}</td>
@@ -205,6 +205,109 @@ function joinTelegram() {
     window.open('https://t.me/SarkariNaukriOfficial', '_blank');
 }
 window.joinTelegram = joinTelegram;
+
+async function showPostDetail(id) {
+    if (typeof openDetailModal === 'function') openDetailModal();
+    const detailBody = document.getElementById('detailBody');
+    const detailTitle = document.getElementById('detailTitle');
+    
+    detailBody.innerHTML = `
+        <div class="text-center p-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2">Loading details...</p>
+        </div>
+    `;
+
+    const res = await fetchData(`/posts/${id}`);
+    if (res && res.success) {
+        const post = res.data;
+        detailTitle.innerText = post.title;
+        
+        let vacancyHtml = '';
+        try {
+            const vDetails = typeof post.vacancyDetails === 'string' ? JSON.parse(post.vacancyDetails || '[]') : post.vacancyDetails;
+            if (vDetails && vDetails.length > 0) {
+                vacancyHtml = `
+                    <div class="detail-card-head mt-4">Vacancy Details</div>
+                    <table class="vacancy-table">
+                        <thead>
+                            <tr>
+                                <th>Department / Post</th>
+                                <th>Male</th>
+                                <th>Female</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${vDetails.map(v => `
+                                <tr>
+                                    <td>${v.dept || v.post || '-'}</td>
+                                    <td>${v.male || '0'}</td>
+                                    <td>${v.female || '0'}</td>
+                                    <td>${v.total || (parseInt(v.male || 0) + parseInt(v.female || 0)) || '-'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
+        } catch (e) { console.error("JSON Parse error", e); }
+
+        let linksHtml = '';
+        if (post.importantLinks && post.importantLinks.length > 0) {
+            linksHtml = `
+                <div class="detail-card-head mt-4">Important Links</div>
+                <div class="text-center">
+                    ${post.importantLinks.map(link => `
+                        <a href="${link.url}" target="_blank" class="link-btn">${link.label}</a>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        detailBody.innerHTML = `
+            <div class="detail-card-head">Short Information</div>
+            <p style="font-size: 14px; line-height: 1.6; color: #444; margin-bottom: 20px;">${post.description}</p>
+            
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <div class="detail-label">Total Vacancies</div>
+                    <div class="detail-value">${post.totalVacancies || 'Not Specified'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Last Date to Apply</div>
+                    <div class="detail-value" style="color:var(--red)">${post.lastDate ? new Date(post.lastDate).toLocaleDateString() : 'N/A'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Application Fees</div>
+                    <div class="detail-value">${post.applicationFees || 'Check Notification'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Age Limit</div>
+                    <div class="detail-value">${post.ageLimit || 'Check Notification'}</div>
+                </div>
+                <div class="detail-item" style="grid-column: span 2;">
+                    <div class="detail-label">Eligibility / Qualification</div>
+                    <div class="detail-value">${post.eligibility || 'Check Notification'}</div>
+                </div>
+            </div>
+
+            ${vacancyHtml}
+            ${linksHtml}
+            
+            <div class="mt-4 text-center p-3" style="background:#fff7e0; border-radius:8px; border:1px dashed var(--gold);">
+                <div style="font-size:12px; color:#666; font-weight:600;">Share this job with friends</div>
+                <div class="mt-2">
+                    <button class="btn btn-sm btn-outline-primary me-2" onclick="window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(window.location.href), '_blank')">WhatsApp</button>
+                    <button class="btn btn-sm btn-outline-info" onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied!')">Copy Link</button>
+                </div>
+            </div>
+        `;
+    } else {
+        detailBody.innerHTML = '<div class="alert alert-danger">Failed to load details.</div>';
+    }
+}
+window.showPostDetail = showPostDetail;
 
 // Initialize all
 const init = () => {

@@ -126,6 +126,30 @@
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div class="form-group">
+                        <label>Application Fees (e.g. Gen: 500, SC: 250)</label>
+                        <input type="text" id="applicationFees" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Age Limit (e.g. 18-25 Years)</label>
+                        <input type="text" id="ageLimit" class="form-control">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Eligibility (e.g. 10th Pass, Degree)</label>
+                        <input type="text" id="eligibility" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Total Vacancies</label>
+                        <input type="number" id="totalVacancies" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Vacancy Details (JSON: [{"dept":"General","male":50,"female":30}])</label>
+                    <textarea id="vacancyDetails" class="form-control" rows="2" placeholder='[{"dept":"General","male":50,"female":30}]'></textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
                         <label>Image Upload</label>
                         <input type="file" id="imageFile" class="form-control" accept="image/*">
                     </div>
@@ -204,7 +228,12 @@
             document.getElementById('description').value = post.description;
             if (post.lastDate) document.getElementById('lastDate').value = post.lastDate.split('T')[0];
             if (post.scheduledAt) document.getElementById('scheduledAt').value = post.scheduledAt.substring(0, 16);
-            document.getElementById('importantLinks').value = JSON.stringify(post.importantLinks);
+            document.getElementById('importantLinks').value = JSON.stringify(post.importantLinks || []);
+            document.getElementById('applicationFees').value = post.applicationFees || '';
+            document.getElementById('ageLimit').value = post.ageLimit || '';
+            document.getElementById('eligibility').value = post.eligibility || '';
+            document.getElementById('totalVacancies').value = post.totalVacancies || '';
+            document.getElementById('vacancyDetails').value = post.vacancyDetails || '';
             
             document.getElementById('modalTitle').innerText = 'Edit Post';
             document.getElementById('postModal').style.display = 'flex';
@@ -238,6 +267,11 @@
                 formData.append('lastDate', document.getElementById('lastDate').value);
                 formData.append('scheduledAt', document.getElementById('scheduledAt').value);
                 formData.append('importantLinks', document.getElementById('importantLinks').value || '[]');
+                formData.append('applicationFees', document.getElementById('applicationFees').value);
+                formData.append('ageLimit', document.getElementById('ageLimit').value);
+                formData.append('eligibility', document.getElementById('eligibility').value);
+                formData.append('totalVacancies', document.getElementById('totalVacancies').value);
+                formData.append('vacancyDetails', document.getElementById('vacancyDetails').value || '[]');
 
                 const imageFile = document.getElementById('imageFile').files[0];
                 const pdfFile = document.getElementById('pdfFile').files[0];

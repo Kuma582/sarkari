@@ -22,6 +22,21 @@ const postSchema = new mongoose.Schema({
   lastDate: {
     type: Date
   },
+  applicationFees: {
+    type: String
+  },
+  eligibility: {
+    type: String
+  },
+  totalVacancies: {
+    type: Number
+  },
+  vacancyDetails: {
+    type: String // JSON string to store department/male/female counts
+  },
+  ageLimit: {
+    type: String
+  },
   importantLinks: [{
     label: String,
     url: String
