@@ -18,6 +18,16 @@ app.use(express.urlencoded({ extended: true }));
 // Configure CORS for production
 app.use(cors()); 
 
+// Disable caching for API routes to ensure real-time updates
+app.use((req, res, next) => {
+  if (req.url.startsWith('/api')) {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
+  next();
+});
+
 // Root route for API testing
 app.get('/api', (req, res) => {
   res.json({ message: 'Sarkari API is running!' });

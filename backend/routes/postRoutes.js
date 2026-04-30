@@ -14,7 +14,9 @@ router.get('/', async (req, res) => {
   const skip = (page - 1) * limit;
 
   const { search, category } = req.query;
-  let query = { isEnabled: true, scheduledAt: { $lte: new Date() } };
+  // Use a 1-minute buffer to ensure posts show up immediately even if there's minor clock skew
+  const now = new Date(Date.now() + 60000); 
+  let query = { isEnabled: true, scheduledAt: { $lte: now } };
 
   if (search) {
     query.$text = { $search: search };
@@ -67,6 +69,10 @@ router.post('/', protect, authorize('Super Admin', 'Editor'), upload.fields([
   try {
     const postData = { ...req.body };
     
+    // Handle empty scheduledAt
+    if (!postData.scheduledAt || postData.scheduledAt === "") {
+      postData.scheduledAt = new Date();
+    }
     // Parse importantLinks if it's a string (from FormData)
     if (typeof postData.importantLinks === 'string') {
       postData.importantLinks = JSON.parse(postData.importantLinks);
@@ -98,6 +104,13 @@ router.put('/:id', protect, authorize('Super Admin', 'Editor'), upload.fields([
     if (!post) return res.status(404).json({ success: false, message: 'Post not found' });
 
     const postData = { ...req.body };
+
+    // Handle empty scheduledAt
+    if (!postData.scheduledAt || postData.scheduledAt === "") {
+      // For updates, we only reset to 'now' if it was explicitly cleared
+      // If it's undefined, Mongoose won't change the existing value
+      if (postData.scheduledAt === "") delete postData.scheduledAt;
+    }
 
     if (typeof postData.importantLinks === 'string') {
       postData.importantLinks = JSON.parse(postData.importantLinks);

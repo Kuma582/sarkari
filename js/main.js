@@ -1,10 +1,15 @@
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:5000/api'
-    : 'https://sarkari-ilnr.onrender.com/api'; // Replace with your actual Render URL later
+    : 'https://sarkari-ilnr.onrender.com/api';
 
 async function fetchData(endpoint) {
     try {
-        const response = await fetch(`${API_URL}${endpoint}`);
+        const cacheBuster = `t=${Date.now()}`;
+        const separator = endpoint.includes('?') ? '&' : '?';
+        const url = `${API_URL}${endpoint}${separator}${cacheBuster}`;
+        
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Network response was not ok');
         return await response.json();
     } catch (error) {
         console.error(`Error fetching ${endpoint}:`, error);
@@ -12,13 +17,43 @@ async function fetchData(endpoint) {
     }
 }
 
-// Function to render jobs in the main table
-async function renderLatestJobs(page = 1, category = '') {
-    const res = await fetchData(`/posts?category=Latest Jobs&page=${page}`);
-    if (res && res.success) {
-        const tbody = document.getElementById('jobTableBody');
-        if (!tbody) return;
+// Helper to render pagination
+function renderPagination(totalPages, currentPage, containerId, callback) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
 
+    let html = '';
+    
+    // Prev button
+    html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+        <a class="page-link" href="javascript:void(0)" onclick="${currentPage > 1 ? `window.${callback.name}(${currentPage - 1})` : ''}">« Prev</a>
+    </li>`;
+
+    // Page numbers
+    for (let i = 1; i <= totalPages; i++) {
+        html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+            <a class="page-link" href="javascript:void(0)" onclick="window.${callback.name}(${i})">${i}</a>
+        </li>`;
+    }
+
+    // Next button
+    html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+        <a class="page-link" href="javascript:void(0)" onclick="${currentPage < totalPages ? `window.${callback.name}(${currentPage + 1})` : ''}">Next »</a>
+    </li>`;
+
+    container.innerHTML = html;
+}
+
+// Make functions global so they can be called from onclick
+window.renderLatestJobs = renderLatestJobs;
+
+// Function to render jobs in the main table
+async function renderLatestJobs(page = 1) {
+    const res = await fetchData(`/posts?category=Latest Jobs&page=${page}&limit=10`);
+    const tbody = document.getElementById('jobTableBody');
+    if (!tbody) return;
+
+    if (res && res.success) {
         if (res.data.length === 0) {
             tbody.innerHTML = '<tr><td colspan="4" class="text-center">No jobs found</td></tr>';
             return;
@@ -34,16 +69,18 @@ async function renderLatestJobs(page = 1, category = '') {
         `).join('');
 
         renderPagination(res.pages, res.currentPage, 'jobPagination', renderLatestJobs);
+    } else {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Failed to load data. Please check your connection.</td></tr>';
     }
 }
 
 // Function to render lists (Results, Admit Cards, etc.)
 async function renderCategoryList(category, elementId) {
     const res = await fetchData(`/posts?category=${category}&limit=8`);
-    if (res && res.success) {
-        const container = document.querySelector(`#${elementId} .job-list`) || document.querySelector(`#${elementId} .sidebar-links`);
-        if (!container) return;
+    const container = document.querySelector(`#${elementId} .job-list`) || document.querySelector(`#${elementId} .sidebar-links`);
+    if (!container) return;
 
+    if (res && res.success) {
         if (res.data.length === 0) {
             container.innerHTML = '<li>No data found</li>';
             return;
@@ -59,6 +96,8 @@ async function renderCategoryList(category, elementId) {
                 ${post.status === 'New' ? '<span class="new-label">NEW</span>' : ''}
             </li>
         `).join('');
+    } else {
+        container.innerHTML = '<li>Error loading data</li>';
     }
 }
 
@@ -85,11 +124,90 @@ async function renderTicker() {
         ticker.innerHTML = res.data.map(post => `
             <a href="#">${post.title}${post.status === 'New' ? '<span class="new-badge">★NEW</span>' : ''}</a>
         `).join('');
+        
+        // Restart animation if needed
+        ticker.style.animation = 'none';
+        ticker.offsetHeight; /* trigger reflow */
+        ticker.style.animation = null;
     }
 }
 
+// Search functionality
+async function doSearch() {
+    const query = document.getElementById('searchInput').value.trim();
+    if (!query) return;
+    
+    const res = await fetchData(`/posts?search=${query}`);
+    const tbody = document.getElementById('jobTableBody');
+    if (!tbody) return;
+
+    if (res && res.success) {
+        const bar = document.getElementById('searchResultsBar');
+        if (bar) {
+            bar.style.display = 'block';
+            document.getElementById('searchResultText').innerHTML =
+                `🔍 Search results for "<b>${query}</b>": <b>${res.data.length}</b> result(s) found.`;
+        }
+
+        if (res.data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center">No results found</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = res.data.map(post => `
+            <tr>
+                <td><a href="#">${post.title}${post.status === 'New' ? '<span class="new-label ms-1">NEW</span>' : ''}</a></td>
+                <td><span class="badge-blue">${post.category}</span></td>
+                <td>-</td>
+                <td style="color:var(--red);font-weight:700;">${post.lastDate ? new Date(post.lastDate).toLocaleDateString() : 'N/A'}</td>
+            </tr>
+        `).join('');
+        
+        document.getElementById('jobPagination').innerHTML = ''; // Clear pagination for search
+    }
+}
+
+window.doSearch = doSearch;
+
+function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    const bar = document.getElementById('searchResultsBar');
+    if (bar) bar.style.display = 'none';
+    renderLatestJobs();
+}
+window.clearSearch = clearSearch;
+
+// State filter
+async function filterByState(state) {
+    document.getElementById('searchInput').value = state;
+    await doSearch();
+    const latestJobs = document.getElementById('latestJobs');
+    if (latestJobs) window.scrollTo({ top: latestJobs.offsetTop - 100, behavior: 'smooth' });
+}
+window.filterByState = filterByState;
+
+// Keyword filter
+async function filterByKeyword(kw) {
+    document.getElementById('searchInput').value = kw;
+    await doSearch();
+    const latestJobs = document.getElementById('latestJobs');
+    if (latestJobs) window.scrollTo({ top: latestJobs.offsetTop - 100, behavior: 'smooth' });
+}
+window.filterByKeyword = filterByKeyword;
+
+function viewAll(title) {
+    alert(`Showing all posts for ${title}...`);
+    // Ideally this would redirect to a category page
+}
+window.viewAll = viewAll;
+
+function joinTelegram() {
+    window.open('https://t.me/SarkariNaukriOfficial', '_blank');
+}
+window.joinTelegram = joinTelegram;
+
 // Initialize all
-document.addEventListener('DOMContentLoaded', () => {
+const init = () => {
     renderLatestJobs();
     renderCategoryList('Results', 'results');
     renderCategoryList('Admit Cards', 'admitCards');
@@ -98,16 +216,10 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCategoryList('Admission', 'admissions');
     renderTicker();
     renderAds();
-});
+};
 
-// Helper for search
-async function doSearch() {
-    const query = document.getElementById('searchInput').value;
-    if (!query) return;
-    
-    const res = await fetchData(`/posts?search=${query}`);
-    if (res && res.success) {
-        // You could open a search results modal or redirect
-        console.log('Search Results:', res.data);
-    }
-}
+document.addEventListener('DOMContentLoaded', () => {
+    init();
+    // Auto refresh every 15 seconds to show latest updates
+    setInterval(init, 15000);
+});

@@ -138,7 +138,10 @@
                     <label>Important Links (JSON format: [{"label":"Apply","url":"..."}])</label>
                     <textarea id="importantLinks" class="form-control" placeholder='[{"label":"Apply","url":"http://..."}]'></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">Save Post</button>
+                <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
+                    <span id="btnText">Save Post</span>
+                    <span id="btnSpinner" style="display: none;"><i class="fas fa-spinner fa-spin ms-2"></i></span>
+                </button>
             </form>
         </div>
     </div>
@@ -148,12 +151,17 @@
         let currentPosts = [];
 
         async function fetchPosts() {
+            const tbody = document.getElementById('postsTableBody');
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem;"><i class="fas fa-spinner fa-spin me-2"></i> Loading posts...</td></tr>';
+            
             const search = document.getElementById('searchInput').value;
             const category = document.getElementById('categoryFilter').value;
             const res = await api.getPosts(1, search, category);
             if (res && res.success) {
                 currentPosts = res.data;
                 renderPosts();
+            } else {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem; color: var(--danger);">Failed to load posts.</td></tr>';
             }
         }
 
@@ -211,33 +219,54 @@
 
         document.getElementById('postForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const id = document.getElementById('postId').value;
-            const formData = new FormData();
-            
-            formData.append('title', document.getElementById('title').value);
-            formData.append('category', document.getElementById('category').value);
-            formData.append('description', document.getElementById('description').value);
-            formData.append('lastDate', document.getElementById('lastDate').value);
-            formData.append('scheduledAt', document.getElementById('scheduledAt').value);
-            formData.append('importantLinks', document.getElementById('importantLinks').value || '[]');
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const btnSpinner = document.getElementById('btnSpinner');
 
-            const imageFile = document.getElementById('imageFile').files[0];
-            const pdfFile = document.getElementById('pdfFile').files[0];
-            if (imageFile) formData.append('image', imageFile);
-            if (pdfFile) formData.append('pdf', pdfFile);
+            // Set loading state
+            submitBtn.disabled = true;
+            btnText.innerText = 'Processing...';
+            btnSpinner.style.display = 'inline-block';
 
-            let res;
-            if (id) {
-                res = await api.updatePost(id, formData);
-            } else {
-                res = await api.createPost(formData);
-            }
+            try {
+                const id = document.getElementById('postId').value;
+                const formData = new FormData();
+                
+                formData.append('title', document.getElementById('title').value);
+                formData.append('category', document.getElementById('category').value);
+                formData.append('description', document.getElementById('description').value);
+                formData.append('lastDate', document.getElementById('lastDate').value);
+                formData.append('scheduledAt', document.getElementById('scheduledAt').value);
+                formData.append('importantLinks', document.getElementById('importantLinks').value || '[]');
 
-            if (res && res.success) {
-                closeModal();
-                fetchPosts();
-            } else {
-                alert(res ? res.message : 'Operation failed');
+                const imageFile = document.getElementById('imageFile').files[0];
+                const pdfFile = document.getElementById('pdfFile').files[0];
+                if (imageFile) formData.append('image', imageFile);
+                if (pdfFile) formData.append('pdf', pdfFile);
+
+                let res;
+                if (id) {
+                    res = await api.updatePost(id, formData);
+                } else {
+                    res = await api.createPost(formData);
+                }
+
+                if (res && res.success) {
+                    closeModal();
+                    await fetchPosts();
+                    // Show small success alert
+                    alert(id ? 'Post updated successfully!' : 'Post created successfully!');
+                } else {
+                    alert(res ? res.message : 'Operation failed');
+                }
+            } catch (err) {
+                console.error('Submit error:', err);
+                alert('Something went wrong. Please try again.');
+            } finally {
+                // Reset loading state
+                submitBtn.disabled = false;
+                btnText.innerText = 'Save Post';
+                btnSpinner.style.display = 'none';
             }
         });
 

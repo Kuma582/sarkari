@@ -23,7 +23,11 @@ const api = {
         }
 
         try {
-            const response = await fetch(`${API_URL}${endpoint}`, config);
+            const cacheBuster = `t=${Date.now()}`;
+            const separator = endpoint.includes('?') ? '&' : '?';
+            const url = `${API_URL}${endpoint}${separator}${cacheBuster}`;
+            
+            const response = await fetch(url, config);
             const data = await response.json();
             
             if (response.status === 401 || response.status === 403) {
