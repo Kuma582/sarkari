@@ -219,95 +219,154 @@ async function showPostDetail(id) {
     `;
 
     const res = await fetchData(`/posts/${id}`);
-    if (res && res.success) {
-        const post = res.data;
-        detailTitle.innerText = post.title;
-        
-        let vacancyHtml = '';
-        try {
-            const vDetails = typeof post.vacancyDetails === 'string' ? JSON.parse(post.vacancyDetails || '[]') : post.vacancyDetails;
-            if (vDetails && vDetails.length > 0) {
-                vacancyHtml = `
-                    <div class="detail-card-head mt-4">Vacancy Details</div>
-                    <table class="vacancy-table">
-                        <thead>
-                            <tr>
-                                <th>Department / Post</th>
-                                <th>Male</th>
-                                <th>Female</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${vDetails.map(v => `
-                                <tr>
-                                    <td>${v.dept || v.post || '-'}</td>
-                                    <td>${v.male || '0'}</td>
-                                    <td>${v.female || '0'}</td>
-                                    <td>${v.total || (parseInt(v.male || 0) + parseInt(v.female || 0)) || '-'}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                `;
-            }
-        } catch (e) { console.error("JSON Parse error", e); }
-
-        let linksHtml = '';
-        if (post.importantLinks && post.importantLinks.length > 0) {
-            linksHtml = `
-                <div class="detail-card-head mt-4">Important Links</div>
-                <div class="text-center">
-                    ${post.importantLinks.map(link => `
-                        <a href="${link.url}" target="_blank" class="link-btn">${link.label}</a>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        detailBody.innerHTML = `
-            <div class="detail-card-head">Short Information</div>
-            <p style="font-size: 14px; line-height: 1.6; color: #444; margin-bottom: 20px;">${post.description}</p>
-            
-            <div class="detail-grid">
-                <div class="detail-item">
-                    <div class="detail-label">Total Vacancies</div>
-                    <div class="detail-value">${post.totalVacancies || 'Not Specified'}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Last Date to Apply</div>
-                    <div class="detail-value" style="color:var(--red)">${post.lastDate ? new Date(post.lastDate).toLocaleDateString() : 'N/A'}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Application Fees</div>
-                    <div class="detail-value">${post.applicationFees || 'Check Notification'}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Age Limit</div>
-                    <div class="detail-value">${post.ageLimit || 'Check Notification'}</div>
-                </div>
-                <div class="detail-item" style="grid-column: span 2;">
-                    <div class="detail-label">Eligibility / Qualification</div>
-                    <div class="detail-value">${post.eligibility || 'Check Notification'}</div>
-                </div>
-            </div>
-
-            ${vacancyHtml}
-            ${linksHtml}
-            
-            <div class="mt-4 text-center p-3" style="background:#fff7e0; border-radius:8px; border:1px dashed var(--gold);">
-                <div style="font-size:12px; color:#666; font-weight:600;">Share this job with friends</div>
-                <div class="mt-2">
-                    <button class="btn btn-sm btn-outline-primary me-2" onclick="window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(window.location.href), '_blank')">WhatsApp</button>
-                    <button class="btn btn-sm btn-outline-info" onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied!')">Copy Link</button>
-                </div>
-            </div>
-        `;
-    } else {
+    if (!res || !res.success) {
         detailBody.innerHTML = '<div class="alert alert-danger">Failed to load details.</div>';
+        return;
     }
+
+    const post = res.data;
+    detailTitle.innerText = post.title;
+
+    // ── Helper ─────────────────────────────────────────────
+    const row = (label, value, color = '') =>
+        value ? `<tr><td style="font-weight:600; padding:7px 12px; width:45%; background:#f8f9fa; border:1px solid #dee2e6;">${label}</td>
+                     <td style="padding:7px 12px; border:1px solid #dee2e6; color:${color || 'inherit'};">${value}</td></tr>` : '';
+
+    const sectionHead = (title, color = '#cc0000') =>
+        `<div style="background:${color}; color:#fff; font-weight:700; font-size:0.95rem; padding:8px 14px; margin:16px 0 0; border-radius:4px 4px 0 0; letter-spacing:0.5px;">${title}</div>`;
+
+    // ── Important Dates Table ──────────────────────────────
+    const datesRows = [
+        row('Apply Start / Last Date', post.lastDate ? new Date(post.lastDate).toLocaleDateString('en-IN') : null, '#cc0000'),
+        row('Admit Card Date', post.admitCardDate, '#0066cc'),
+        row('Exam Date', post.examDate, '#0066cc'),
+        row('Result Date', post.resultDate, '#007700'),
+        row('Answer Key Date', post.answerKeyDate, '#007700'),
+    ].filter(Boolean).join('');
+
+    // ── Application Fee Table ──────────────────────────────
+    let feeRows = '';
+    if (post.applicationFees) {
+        post.applicationFees.split('|').forEach(part => {
+            const [cat, fee] = part.split(':').map(s => s.trim());
+            if (cat && fee) feeRows += row(cat, fee);
+        });
+    }
+    if (post.paymentMode) feeRows += row('Payment Mode', post.paymentMode, '#0066cc');
+
+    // ── Vacancy Table ──────────────────────────────────────
+    let vacancyRows = '';
+    vacancyRows += row('Total Vacancies', post.totalVacancies ? String(post.totalVacancies) : null, '#cc0000');
+    if (post.maleVacancies)   vacancyRows += row('Male Vacancies',   String(post.maleVacancies),   '#0066cc');
+    if (post.femaleVacancies) vacancyRows += row('Female Vacancies', String(post.femaleVacancies), '#cc0099');
+
+    // Post-wise vacancy detail
+    let postWiseHtml = '';
+    try {
+        const vDetails = typeof post.vacancyDetails === 'string' ? JSON.parse(post.vacancyDetails || '[]') : (post.vacancyDetails || []);
+        if (Array.isArray(vDetails) && vDetails.length > 0) {
+            const pRows = vDetails.map(v =>
+                `<tr>
+                    <td style="padding:6px 12px; border:1px solid #dee2e6;">${v.post || v.dept || '-'}</td>
+                    <td style="padding:6px 12px; border:1px solid #dee2e6; text-align:center; font-weight:700; color:#cc0000;">${v.total || '-'}</td>
+                </tr>`
+            ).join('');
+            postWiseHtml = `
+                ${sectionHead('Post-wise Vacancy Detail', '#555')}
+                <table style="width:100%; border-collapse:collapse; font-size:0.88rem;">
+                    <thead><tr>
+                        <th style="padding:7px 12px; background:#eee; border:1px solid #dee2e6; text-align:left;">Post Name</th>
+                        <th style="padding:7px 12px; background:#eee; border:1px solid #dee2e6; text-align:center;">Total Posts</th>
+                    </tr></thead>
+                    <tbody>${pRows}</tbody>
+                </table>`;
+        }
+    } catch(e) {}
+
+    // ── Eligibility & Other ────────────────────────────────
+    const otherRows = [
+        row('Eligibility / Education', post.eligibility),
+        row('Age Limit', post.ageLimit, '#cc0000'),
+        row('Exam Mode', post.examMode),
+        row('Department', post.department),
+    ].filter(Boolean).join('');
+
+    // ── Important Links (Apply Buttons) ───────────────────
+    let linksHtml = '';
+    if (post.importantLinks && post.importantLinks.length > 0) {
+        const btnColors = ['#cc0000','#0066cc','#007700','#885500','#550088'];
+        const btns = post.importantLinks.map((link, i) => `
+            <a href="${link.url}" target="_blank" rel="noopener"
+               style="display:inline-block; margin:5px 8px; padding:10px 22px; background:${btnColors[i % btnColors.length]};
+                      color:#fff; text-decoration:none; border-radius:5px; font-weight:700; font-size:0.9rem;
+                      box-shadow: 0 3px 8px rgba(0,0,0,0.18);">
+                ${link.label}
+            </a>
+        `).join('');
+        linksHtml = `
+            ${sectionHead('🔗 Important Links / Apply Online', '#0066cc')}
+            <div style="padding:14px; background:#f0f6ff; border:1px solid #dee2e6; text-align:center; border-radius:0 0 4px 4px;">
+                ${btns}
+            </div>`;
+    }
+
+    // ── Final HTML ─────────────────────────────────────────
+    detailBody.innerHTML = `
+        <div style="font-family:'Segoe UI',sans-serif; font-size:0.88rem;">
+
+            <!-- Notification notice -->
+            <div style="background:#fff3cd; border:1px solid #ffc107; padding:8px 14px; border-radius:4px; margin-bottom:12px; font-size:0.82rem;">
+                <b>📢 Note:</b> Read the full official notification before applying. All details subject to change.
+            </div>
+
+            <!-- Description -->
+            ${sectionHead('📋 Short Information')}
+            <div style="padding:10px 14px; background:#fff; border:1px solid #dee2e6; font-size:0.88rem; line-height:1.7; border-radius:0 0 4px 4px;">
+                ${post.description}
+            </div>
+
+            <!-- Important Dates -->
+            ${datesRows ? `
+            ${sectionHead('📅 Important Dates')}
+            <table style="width:100%; border-collapse:collapse; font-size:0.88rem;">${datesRows}</table>` : ''}
+
+            <!-- Application Fee -->
+            ${feeRows ? `
+            ${sectionHead('💰 Application Fee')}
+            <table style="width:100%; border-collapse:collapse; font-size:0.88rem;">${feeRows}</table>` : ''}
+
+            <!-- Vacancy -->
+            ${vacancyRows ? `
+            ${sectionHead('📊 Total Vacancy')}
+            <table style="width:100%; border-collapse:collapse; font-size:0.88rem;">${vacancyRows}</table>` : ''}
+
+            ${postWiseHtml}
+
+            <!-- Eligibility & Other -->
+            ${otherRows ? `
+            ${sectionHead('📝 Eligibility & Other Details')}
+            <table style="width:100%; border-collapse:collapse; font-size:0.88rem;">${otherRows}</table>` : ''}
+
+            <!-- Links -->
+            ${linksHtml}
+
+            <!-- Share -->
+            <div style="margin-top:16px; text-align:center; padding:10px; background:#f8f9fa; border-radius:6px; border:1px dashed #ccc;">
+                <span style="font-size:12px; font-weight:600; color:#666;">Share this job with friends →</span>
+                <button onclick="window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(document.title + ' ' + window.location.href), '_blank')"
+                    style="margin-left:10px; padding:4px 14px; background:#25D366; color:#fff; border:none; border-radius:4px; cursor:pointer; font-weight:600;">
+                    WhatsApp
+                </button>
+                <button onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied!')"
+                    style="margin-left:6px; padding:4px 14px; background:#0066cc; color:#fff; border:none; border-radius:4px; cursor:pointer; font-weight:600;">
+                    Copy Link
+                </button>
+            </div>
+        </div>
+    `;
 }
 window.showPostDetail = showPostDetail;
+
 
 // Initialize all
 const init = () => {

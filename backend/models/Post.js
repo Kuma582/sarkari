@@ -15,6 +15,10 @@ const postSchema = new mongoose.Schema({
     required: true,
     enum: ['Latest Jobs', 'Results', 'Admit Cards', 'Answer Keys', 'Syllabus', 'Admission', 'Other']
   },
+  department: {
+    type: String,
+    trim: true
+  },
   postDate: {
     type: Date,
     default: Date.now
@@ -28,7 +32,31 @@ const postSchema = new mongoose.Schema({
   eligibility: {
     type: String
   },
+  admitCardDate: {
+    type: String
+  },
+  examDate: {
+    type: String
+  },
+  resultDate: {
+    type: String
+  },
+  answerKeyDate: {
+    type: String
+  },
+  examMode: {
+    type: String // Written / Physical / Direct
+  },
+  paymentMode: {
+    type: String
+  },
   totalVacancies: {
+    type: Number
+  },
+  maleVacancies: {
+    type: Number
+  },
+  femaleVacancies: {
     type: Number
   },
   vacancyDetails: {
@@ -41,12 +69,6 @@ const postSchema = new mongoose.Schema({
     label: String,
     url: String
   }],
-  pdfUrl: {
-    type: String
-  },
-  imageUrl: {
-    type: String
-  },
   status: {
     type: String,
     enum: ['New', 'Old'],

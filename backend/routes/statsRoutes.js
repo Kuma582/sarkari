@@ -12,9 +12,31 @@ router.get('/', protect, authorize('Super Admin', 'Editor'), async (req, res) =>
     const totalPosts = await Post.countDocuments();
     const totalUsers = await User.countDocuments();
     
+    // Vacancy Sums
+    const vacancyStats = await Post.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalVacancies: { $sum: "$totalVacancies" },
+          maleVacancies: { $sum: "$maleVacancies" },
+          femaleVacancies: { $sum: "$femaleVacancies" }
+        }
+      }
+    ]);
+
+    const vacancyTotals = vacancyStats[0] || { totalVacancies: 0, maleVacancies: 0, femaleVacancies: 0 };
+
     // Count by category
     const categoryStats = await Post.aggregate([
       { $group: { _id: '$category', count: { $sum: 1 } } }
+    ]);
+
+    // Count by department
+    const departmentStats = await Post.aggregate([
+      { $match: { department: { $ne: null, $ne: "" } } },
+      { $group: { _id: '$department', count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 10 }
     ]);
 
     // Recent posts
@@ -29,7 +51,9 @@ router.get('/', protect, authorize('Super Admin', 'Editor'), async (req, res) =>
         totalPosts,
         totalUsers,
         categoryStats,
-        recentPosts
+        departmentStats,
+        recentPosts,
+        vacancyTotals
       }
     });
   } catch (error) {

@@ -111,23 +111,83 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label>Department (e.g. SSC, UPSC, Railway)</label>
+                    <input type="text" id="department" class="form-control" placeholder="e.g. Staff Selection Commission">
+                </div>
+                <div class="form-group">
                     <label>Description</label>
                     <textarea id="description" class="form-control" rows="4" required></textarea>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div class="form-group">
-                        <label>Last Date</label>
+                        <label>Last Date to Apply</label>
                         <input type="date" id="lastDate" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label>Scheduled At</label>
+                        <label>Scheduled At (Publish Time)</label>
                         <input type="datetime-local" id="scheduledAt" class="form-control">
                     </div>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div class="form-group">
-                        <label>Application Fees (e.g. Gen: 500, SC: 250)</label>
-                        <input type="text" id="applicationFees" class="form-control">
+                        <label>Admit Card Date (e.g. June 2025)</label>
+                        <input type="text" id="admitCardDate" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Exam Date (e.g. 15-20 July 2025)</label>
+                        <input type="text" id="examDate" class="form-control">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Result Date</label>
+                        <input type="text" id="resultDate" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Answer Key Date</label>
+                        <input type="text" id="answerKeyDate" class="form-control">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Exam Mode (Written / Physical / Direct)</label>
+                        <input type="text" id="examMode" class="form-control" placeholder="e.g. Written Exam">
+                    </div>
+                    <div class="form-group">
+                        <label>Payment Mode (Online / Offline)</label>
+                        <input type="text" id="paymentMode" class="form-control" placeholder="e.g. Online (Net Banking, Card)">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Application Fees (Category-wise)</label>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-top: 0.5rem; background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px;">
+                            <div>
+                                <label style="font-size:0.75rem; color: var(--text-muted);">General / OBC / EWS</label>
+                                <input type="text" id="fee_general" class="form-control" placeholder="e.g. ₹500">
+                            </div>
+                            <div>
+                                <label style="font-size:0.75rem; color: var(--text-muted);">SC / ST</label>
+                                <input type="text" id="fee_scst" class="form-control" placeholder="e.g. ₹250">
+                            </div>
+                            <div>
+                                <label style="font-size:0.75rem; color: var(--text-muted);">PH / Divyang</label>
+                                <input type="text" id="fee_ph" class="form-control" placeholder="e.g. ₹0">
+                            </div>
+                            <div>
+                                <label style="font-size:0.75rem; color: var(--text-muted);">Female (All Cat.)</label>
+                                <input type="text" id="fee_female" class="form-control" placeholder="e.g. ₹250">
+                            </div>
+                            <div>
+                                <label style="font-size:0.75rem; color: var(--text-muted);">Ex-Serviceman</label>
+                                <input type="text" id="fee_exsm" class="form-control" placeholder="e.g. ₹0">
+                            </div>
+                            <div>
+                                <label style="font-size:0.75rem; color: var(--text-muted);">Payment Mode</label>
+                                <input type="text" id="paymentMode" class="form-control" placeholder="Online / Offline">
+                            </div>
+                        </div>
+                        <input type="hidden" id="applicationFees">
                     </div>
                     <div class="form-group">
                         <label>Age Limit (e.g. 18-25 Years)</label>
@@ -135,32 +195,70 @@
                     </div>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div class="form-group">
-                        <label>Eligibility (e.g. 10th Pass, Degree)</label>
-                        <input type="text" id="eligibility" class="form-control">
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Eligibility / Education (Check all that apply)</label>
+                        <div id="eligibilityOptions" style="display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 0.5rem; background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px;">
+                            <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.85rem;">
+                                <input type="checkbox" class="edu-checkbox" value="10th Pass"> 10th Pass
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.85rem;">
+                                <input type="checkbox" class="edu-checkbox" value="12th Pass"> 12th Pass
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.85rem;">
+                                <input type="checkbox" class="edu-checkbox" value="ITI"> ITI
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.85rem;">
+                                <input type="checkbox" class="edu-checkbox" value="Diploma"> Diploma
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.85rem;">
+                                <input type="checkbox" class="edu-checkbox" value="Graduation"> Graduation
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.85rem;">
+                                <input type="checkbox" class="edu-checkbox" value="Post Graduation"> Post Graduation
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.85rem;">
+                                <input type="checkbox" class="edu-checkbox" value="B.Ed"> B.Ed
+                            </label>
+                            <input type="text" id="otherEligibility" class="form-control" placeholder="Other specific requirements" style="flex: 1; min-width: 200px; height: 32px; font-size: 0.8rem;">
+                        </div>
+                        <input type="hidden" id="eligibility">
                     </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
                     <div class="form-group">
                         <label>Total Vacancies</label>
                         <input type="number" id="totalVacancies" class="form-control">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Vacancy Details (JSON: [{"dept":"General","male":50,"female":30}])</label>
-                    <textarea id="vacancyDetails" class="form-control" rows="2" placeholder='[{"dept":"General","male":50,"female":30}]'></textarea>
-                </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div class="form-group">
-                        <label>Image Upload</label>
-                        <input type="file" id="imageFile" class="form-control" accept="image/*">
+                        <label>Male Vacancies</label>
+                        <input type="number" id="maleVacancies" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label>PDF Upload</label>
-                        <input type="file" id="pdfFile" class="form-control" accept="application/pdf">
+                        <label>Female Vacancies</label>
+                        <input type="number" id="femaleVacancies" class="form-control">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Important Links (JSON format: [{"label":"Apply","url":"..."}])</label>
-                    <textarea id="importantLinks" class="form-control" placeholder='[{"label":"Apply","url":"http://..."}]'></textarea>
+                    <label>Post-wise Vacancy Details</label>
+                    <div id="vacancyContainer" style="margin-bottom: 0.5rem;">
+                        <!-- Vacancy rows will be added here -->
+                    </div>
+                    <button type="button" onclick="addVacancyRow()" class="btn" style="font-size: 0.8rem; background: rgba(255,255,255,0.05); color: var(--success);">
+                        <i class="fas fa-plus"></i> Add Post Detail
+                    </button>
+                    <input type="hidden" id="vacancyDetails">
+                </div>
+                <div class="form-group">
+                    <label>Important Links</label>
+                    <div id="linksContainer" style="margin-bottom: 0.5rem;">
+                        <!-- Link rows will be added here -->
+                    </div>
+                    <button type="button" onclick="addLinkRow()" class="btn" style="font-size: 0.8rem; background: rgba(255,255,255,0.05); color: var(--primary);">
+                        <i class="fas fa-plus"></i> Add Link
+                    </button>
+                    <input type="hidden" id="importantLinks">
                 </div>
                 <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
                     <span id="btnText">Save Post</span>
@@ -173,6 +271,112 @@
     <script src="js/admin.js"></script>
     <script>
         let currentPosts = [];
+
+        function addLinkRow(label = '', url = '') {
+            const container = document.getElementById('linksContainer');
+            const row = document.createElement('div');
+            row.className = 'link-row flex gap-2 mb-2';
+            row.innerHTML = `
+                <input type="text" placeholder="Label (e.g. Apply)" class="form-control link-label" value="${label}" style="flex: 1;">
+                <input type="text" placeholder="URL (Google link, etc.)" class="form-control link-url" value="${url}" style="flex: 2;">
+                <button type="button" onclick="this.parentElement.remove()" class="btn text-danger" style="padding: 0 10px;"><i class="fas fa-times"></i></button>
+            `;
+            container.appendChild(row);
+        }
+
+        function getLinksAsJson() {
+            const rows = document.querySelectorAll('.link-row');
+            const links = [];
+            rows.forEach(row => {
+                const label = row.querySelector('.link-label').value;
+                const url = row.querySelector('.link-url').value;
+                if (label && url) links.push({ label, url });
+            });
+            return JSON.stringify(links);
+        }
+
+        function addVacancyRow(post = '', count = '') {
+            const container = document.getElementById('vacancyContainer');
+            const row = document.createElement('div');
+            row.className = 'vacancy-row flex gap-2 mb-2';
+            row.innerHTML = `
+                <input type="text" placeholder="Post Name (e.g. General)" class="form-control v-post" value="${post}" style="flex: 2;">
+                <input type="number" placeholder="Count" class="form-control v-count" value="${count}" style="flex: 1;">
+                <button type="button" onclick="this.parentElement.remove()" class="btn text-danger" style="padding: 0 10px;"><i class="fas fa-times"></i></button>
+            `;
+            container.appendChild(row);
+        }
+
+        function getVacancyAsJson() {
+            const rows = document.querySelectorAll('.vacancy-row');
+            const data = [];
+            rows.forEach(row => {
+                const post = row.querySelector('.v-post').value;
+                const count = row.querySelector('.v-count').value;
+                if (post && count) data.push({ post, total: count });
+            });
+            return JSON.stringify(data);
+        }
+
+        function getEligibility() {
+            const checkboxes = document.querySelectorAll('.edu-checkbox:checked');
+            const selected = Array.from(checkboxes).map(cb => cb.value);
+            const other = document.getElementById('otherEligibility').value.trim();
+            if (other) selected.push(other);
+            return selected.join(', ');
+        }
+
+        function setEligibility(value = '') {
+            const checkboxes = document.querySelectorAll('.edu-checkbox');
+            checkboxes.forEach(cb => cb.checked = false);
+            document.getElementById('otherEligibility').value = '';
+            
+            if (!value) return;
+            
+            const parts = value.split(',').map(p => p.trim());
+            const knownValues = Array.from(checkboxes).map(cb => cb.value);
+            
+            const others = [];
+            parts.forEach(p => {
+                const cb = Array.from(checkboxes).find(c => c.value === p);
+                if (cb) {
+                    cb.checked = true;
+                } else {
+                    others.push(p);
+                }
+            });
+            
+            if (others.length > 0) {
+                document.getElementById('otherEligibility').value = others.join(', ');
+            }
+        }
+
+        function getFeesAsString() {
+            const gen    = document.getElementById('fee_general').value.trim();
+            const scst   = document.getElementById('fee_scst').value.trim();
+            const ph     = document.getElementById('fee_ph').value.trim();
+            const female = document.getElementById('fee_female').value.trim();
+            const exsm   = document.getElementById('fee_exsm').value.trim();
+            const parts  = [];
+            if (gen)    parts.push(`Gen/OBC/EWS: ${gen}`);
+            if (scst)   parts.push(`SC/ST: ${scst}`);
+            if (ph)     parts.push(`PH/Divyang: ${ph}`);
+            if (female) parts.push(`Female: ${female}`);
+            if (exsm)   parts.push(`Ex-SM: ${exsm}`);
+            return parts.join(' | ');
+        }
+
+        function setFeesFromString(str = '') {
+            ['fee_general','fee_scst','fee_ph','fee_female','fee_exsm'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            if (!str) return;
+            const map = { 'Gen/OBC/EWS': 'fee_general', 'SC/ST': 'fee_scst', 'PH/Divyang': 'fee_ph', 'Female': 'fee_female', 'Ex-SM': 'fee_exsm' };
+            str.split('|').forEach(part => {
+                const [key, val] = part.split(':').map(s => s.trim());
+                if (map[key] && val) document.getElementById(map[key]).value = val;
+            });
+        }
 
         async function fetchPosts() {
             const tbody = document.getElementById('postsTableBody');
@@ -209,6 +413,10 @@
 
         function openModal() {
             document.getElementById('postForm').reset();
+            document.getElementById('linksContainer').innerHTML = '';
+            document.getElementById('vacancyContainer').innerHTML = '';
+            addLinkRow('Apply Online', ''); 
+            addVacancyRow('General', ''); // Default row
             document.getElementById('postId').value = '';
             document.getElementById('modalTitle').innerText = 'Add New Post';
             document.getElementById('postModal').style.display = 'flex';
@@ -225,15 +433,45 @@
             document.getElementById('postId').value = post._id;
             document.getElementById('title').value = post.title;
             document.getElementById('category').value = post.category;
+            document.getElementById('department').value = post.department || '';
             document.getElementById('description').value = post.description;
             if (post.lastDate) document.getElementById('lastDate').value = post.lastDate.split('T')[0];
             if (post.scheduledAt) document.getElementById('scheduledAt').value = post.scheduledAt.substring(0, 16);
             document.getElementById('importantLinks').value = JSON.stringify(post.importantLinks || []);
-            document.getElementById('applicationFees').value = post.applicationFees || '';
+            setFeesFromString(post.applicationFees || '');
+            document.getElementById('paymentMode').value = post.paymentMode || '';
             document.getElementById('ageLimit').value = post.ageLimit || '';
-            document.getElementById('eligibility').value = post.eligibility || '';
+            setEligibility(post.eligibility || '');
+            document.getElementById('examMode').value = post.examMode || '';
+            document.getElementById('admitCardDate').value = post.admitCardDate || '';
+            document.getElementById('examDate').value = post.examDate || '';
+            document.getElementById('resultDate').value = post.resultDate || '';
+            document.getElementById('answerKeyDate').value = post.answerKeyDate || '';
             document.getElementById('totalVacancies').value = post.totalVacancies || '';
-            document.getElementById('vacancyDetails').value = post.vacancyDetails || '';
+            document.getElementById('maleVacancies').value = post.maleVacancies || '';
+            document.getElementById('femaleVacancies').value = post.femaleVacancies || '';
+            
+            // Populate vacancies
+            const vContainer = document.getElementById('vacancyContainer');
+            vContainer.innerHTML = '';
+            try {
+                const vDetails = typeof post.vacancyDetails === 'string' ? JSON.parse(post.vacancyDetails || '[]') : post.vacancyDetails;
+                if (Array.isArray(vDetails) && vDetails.length > 0) {
+                    vDetails.forEach(v => addVacancyRow(v.post || v.dept, v.total || (parseInt(v.male || 0) + parseInt(v.female || 0))));
+                } else {
+                    addVacancyRow();
+                }
+            } catch (e) { addVacancyRow(); }
+
+            // Populate links
+            const container = document.getElementById('linksContainer');
+            container.innerHTML = '';
+            const links = post.importantLinks || [];
+            if (links.length > 0) {
+                links.forEach(link => addLinkRow(link.label, link.url));
+            } else {
+                addLinkRow();
+            }
             
             document.getElementById('modalTitle').innerText = 'Edit Post';
             document.getElementById('postModal').style.display = 'flex';
@@ -263,20 +501,24 @@
                 
                 formData.append('title', document.getElementById('title').value);
                 formData.append('category', document.getElementById('category').value);
+                formData.append('department', document.getElementById('department').value);
                 formData.append('description', document.getElementById('description').value);
                 formData.append('lastDate', document.getElementById('lastDate').value);
                 formData.append('scheduledAt', document.getElementById('scheduledAt').value);
-                formData.append('importantLinks', document.getElementById('importantLinks').value || '[]');
-                formData.append('applicationFees', document.getElementById('applicationFees').value);
+                formData.append('importantLinks', getLinksAsJson());
+                formData.append('applicationFees', getFeesAsString());
+                formData.append('paymentMode', document.getElementById('paymentMode').value);
                 formData.append('ageLimit', document.getElementById('ageLimit').value);
-                formData.append('eligibility', document.getElementById('eligibility').value);
+                formData.append('eligibility', getEligibility());
+                formData.append('examMode', document.getElementById('examMode').value);
+                formData.append('admitCardDate', document.getElementById('admitCardDate').value);
+                formData.append('examDate', document.getElementById('examDate').value);
+                formData.append('resultDate', document.getElementById('resultDate').value);
+                formData.append('answerKeyDate', document.getElementById('answerKeyDate').value);
                 formData.append('totalVacancies', document.getElementById('totalVacancies').value);
-                formData.append('vacancyDetails', document.getElementById('vacancyDetails').value || '[]');
-
-                const imageFile = document.getElementById('imageFile').files[0];
-                const pdfFile = document.getElementById('pdfFile').files[0];
-                if (imageFile) formData.append('image', imageFile);
-                if (pdfFile) formData.append('pdf', pdfFile);
+                formData.append('maleVacancies', document.getElementById('maleVacancies').value);
+                formData.append('femaleVacancies', document.getElementById('femaleVacancies').value);
+                formData.append('vacancyDetails', getVacancyAsJson());
 
                 let res;
                 if (id) {

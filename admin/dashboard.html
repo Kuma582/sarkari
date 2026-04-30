@@ -59,12 +59,16 @@
                     <span id="totalPosts" class="stat-value">0</span>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-label">Total Users</span>
-                    <span id="totalUsers" class="stat-value">0</span>
+                    <span class="stat-label">Total Vacancy</span>
+                    <span id="totalVacancySum" class="stat-value">0</span>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-label">Active Ads</span>
-                    <span id="activeAds" class="stat-value">0</span>
+                    <span class="stat-label">Male / Female</span>
+                    <span id="vacancyGender" class="stat-value" style="font-size: 1.5rem;">0 / 0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Total Users</span>
+                    <span id="totalUsers" class="stat-value">0</span>
                 </div>
             </div>
 
@@ -93,6 +97,12 @@
                         <!-- Data will be injected here -->
                     </div>
                 </div>
+                <div class="card">
+                    <h3>Department Wise</h3>
+                    <div id="departmentStats" class="mt-4">
+                        <!-- Data will be injected here -->
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -109,6 +119,10 @@
                 
                 document.getElementById('totalPosts').innerText = totalPosts;
                 document.getElementById('totalUsers').innerText = totalUsers;
+                
+                const { vacancyTotals, departmentStats } = res.data;
+                document.getElementById('totalVacancySum').innerText = vacancyTotals.totalVacancies || 0;
+                document.getElementById('vacancyGender').innerText = `${vacancyTotals.maleVacancies || 0} / ${vacancyTotals.femaleVacancies || 0}`;
 
                 // Recent Posts Table
                 const recentTable = document.getElementById('recentPostsTable');
@@ -133,6 +147,17 @@
                         <span style="font-weight: 600; background: #334155; padding: 2px 10px; border-radius: 12px; font-size: 0.8rem;">${stat.count}</span>
                     </div>
                 `).join('');
+
+                // Department Stats
+                const deptStatsDiv = document.getElementById('departmentStats');
+                deptStatsDiv.innerHTML = departmentStats.length > 0 
+                    ? departmentStats.map(stat => `
+                        <div class="flex justify-between items-center mb-4">
+                            <span style="font-size: 0.9rem;">${stat._id}</span>
+                            <span style="font-weight: 600; background: var(--primary); padding: 2px 10px; border-radius: 12px; font-size: 0.8rem;">${stat.count}</span>
+                        </div>
+                    `).join('')
+                    : '<p style="color: var(--text-muted); font-size: 0.9rem;">No department data available.</p>';
             }
         }
 

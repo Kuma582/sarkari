@@ -62,10 +62,7 @@ router.get('/:id', async (req, res) => {
 
 // @desc    Create new post
 // @route   POST /api/posts
-router.post('/', protect, authorize('Super Admin', 'Editor'), upload.fields([
-  { name: 'image', maxCount: 1 },
-  { name: 'pdf', maxCount: 1 }
-]), async (req, res) => {
+router.post('/', protect, authorize('Super Admin', 'Editor'), upload.none(), async (req, res) => {
   try {
     const postData = { ...req.body };
     
@@ -76,11 +73,6 @@ router.post('/', protect, authorize('Super Admin', 'Editor'), upload.fields([
     // Parse importantLinks if it's a string (from FormData)
     if (typeof postData.importantLinks === 'string') {
       postData.importantLinks = JSON.parse(postData.importantLinks);
-    }
-
-    if (req.files) {
-      if (req.files.image) postData.imageUrl = `/uploads/${req.files.image[0].filename}`;
-      if (req.files.pdf) postData.pdfUrl = `/uploads/${req.files.pdf[0].filename}`;
     }
 
     postData.author = req.user._id;
@@ -95,10 +87,7 @@ router.post('/', protect, authorize('Super Admin', 'Editor'), upload.fields([
 
 // @desc    Update post
 // @route   PUT /api/posts/:id
-router.put('/:id', protect, authorize('Super Admin', 'Editor'), upload.fields([
-  { name: 'image', maxCount: 1 },
-  { name: 'pdf', maxCount: 1 }
-]), async (req, res) => {
+router.put('/:id', protect, authorize('Super Admin', 'Editor'), upload.none(), async (req, res) => {
   try {
     let post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ success: false, message: 'Post not found' });
@@ -114,11 +103,6 @@ router.put('/:id', protect, authorize('Super Admin', 'Editor'), upload.fields([
 
     if (typeof postData.importantLinks === 'string') {
       postData.importantLinks = JSON.parse(postData.importantLinks);
-    }
-
-    if (req.files) {
-      if (req.files.image) postData.imageUrl = `/uploads/${req.files.image[0].filename}`;
-      if (req.files.pdf) postData.pdfUrl = `/uploads/${req.files.pdf[0].filename}`;
     }
 
     post = await Post.findByIdAndUpdate(req.params.id, postData, { new: true, runValidators: true });

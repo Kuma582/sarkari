@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=1200">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description"
     content="SarkariNaukri.in - Latest Government Jobs, Results, Admit Cards, Answer Keys & Admissions 2024-2025">
   <meta name="keywords" content="sarkari result, government jobs, sarkari naukri, admit card, result 2024, latest jobs">
@@ -44,7 +44,6 @@
       background: var(--light-bg);
       color: var(--text);
       font-size: 14px;
-      min-width: 1200px;
     }
 
     /* ---- TOP ALERT BAR ---- */
@@ -781,6 +780,78 @@
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       border-radius: 4px;
+    }
+
+    /* ===== MOBILE RESPONSIVE ===== */
+    @media (max-width: 768px) {
+
+      /* Hide sidebar on mobile */
+      .right-col { display: none !important; }
+
+      /* Stack columns */
+      .two-col { flex-direction: column; gap: 10px; }
+      .left-col { width: 100%; }
+
+      /* Grid adjustments */
+      .grid-2 { grid-template-columns: 1fr; gap: 10px; }
+      .imp-links-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+
+      /* Header - compact */
+      .header-inner { flex-wrap: wrap; gap: 8px; padding: 8px 0; }
+      .logo-emblem { width: 46px; height: 46px; font-size: 22px; }
+      .logo-main { font-size: 17px; }
+      .logo-sub { font-size: 10px; }
+      .header-search { flex: 0 0 100%; order: 3; }
+
+      /* Nav - horizontal scrollable on mobile */
+      .main-nav .navbar-nav { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; padding-bottom: 4px; }
+      .main-nav .nav-link { padding: 8px 10px !important; font-size: 11px; white-space: nowrap; }
+
+      /* Container padding */
+      .container { padding-left: 10px; padding-right: 10px; }
+      .main-wrap { padding: 10px 0 20px; }
+
+      /* Important boxes - bigger touch targets */
+      .imp-box-head { font-size: 11px; padding: 8px 6px 6px; }
+      .imp-box-body { font-size: 11px; padding: 4px 6px 8px; }
+      .imp-box .icon-big { font-size: 18px; }
+
+      /* Job table */
+      .detail-table th, .detail-table td { padding: 5px 7px; font-size: 12px; }
+
+      /* Section head */
+      .section-head { font-size: 12px; padding: 7px 10px; }
+
+      /* Filter bar */
+      .filter-bar { padding: 8px 10px; gap: 6px; }
+      .filter-btn { font-size: 11px; padding: 3px 10px; }
+
+      /* States bar - scrollable */
+      .states-bar { padding: 4px 0; }
+      .state-link { font-size: 10px; padding: 2px 8px; }
+
+      /* Detail modal */
+      .modal-dialog { margin: 8px !important; }
+      .modal-content { border-radius: 8px; }
+      .modal-header { padding: 10px 14px; }
+      .modal-title { font-size: 15px; }
+      .modal-body { padding: 12px; }
+
+      /* Footer */
+      .site-footer .row { gap: 20px; }
+
+      /* Top alert bar - hide on small screens */
+      .top-alert-bar { display: none; }
+    }
+
+    /* Extra small phones */
+    @media (max-width: 480px) {
+      .imp-links-grid { grid-template-columns: 1fr 1fr; }
+      .logo-main { font-size: 15px; }
+      .logo-sub { display: none; }
+      .section-head { font-size: 11px; }
+      .job-list li { padding: 6px 10px; }
+      .job-list li a { font-size: 12px; }
     }
   </style>
 </head>
