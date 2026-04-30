@@ -16,24 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Configure CORS for production
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:5500',
-  'http://localhost:5000',
-  'http://127.0.0.1:5500',
-  'https://playful-truffle-1fb2c8.netlify.app'
-];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
+app.use(cors()); // Allow all origins for troubleshooting
 
 app.use(helmet({
   crossOriginResourcePolicy: false, // Allow images to be loaded cross-origin
