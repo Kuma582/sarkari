@@ -99,6 +99,19 @@
                     <textarea id="footer_code" class="form-control" rows="6" placeholder="Paste code here..."></textarea>
                     <button onclick="updateAd('footer')" class="btn btn-primary mt-4">Update Footer Ad</button>
                 </div>
+
+                <!-- Modal Ad -->
+                <div class="card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3>Inside Detail Modal Ad</h3>
+                        <label class="switch-container">
+                            <input type="checkbox" id="modal_enabled" onchange="updateAd('modal')">
+                            <span>Enable</span>
+                        </label>
+                    </div>
+                    <textarea id="modal_code" class="form-control" rows="6" placeholder="Paste code here..."></textarea>
+                    <button onclick="updateAd('modal')" class="btn btn-primary mt-4">Update Modal Ad</button>
+                </div>
             </div>
         </main>
     </div>
