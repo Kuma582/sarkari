@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /*?*
+
+Sitemap: https://sarkari-ilnr.netlify.app/sitemap.xml

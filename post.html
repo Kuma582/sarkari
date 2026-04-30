@@ -4,8 +4,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" id="metaDescription" content="SarkariNaukri.in - Latest Government Jobs, Results, Admit Cards">
-  <title id="pageTitle">Job Details - SarkariNaukri.in</title>
+  <meta name="description" id="metaDescription" content="Sarkari Result: Find the Latest Government Jobs, Sarkari Naukri, Admit Cards, and Exam Results on SarkariNaukri.in">
+  <meta name="keywords" content="sarkari result, sarkari naukri, government jobs, admit card, result 2025, latest jobs, free job alert">
+  <meta name="author" content="SarkariNaukri.in">
+  
+  <meta property="og:title" id="ogTitle" content="Sarkari Result | Latest Govt Jobs 2025">
+  <meta property="og:description" id="ogDescription" content="Get all the latest Government Jobs, Admit Cards, and Exam Results instantly on SarkariNaukri.in">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="SarkariNaukri.in">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <title id="pageTitle">Sarkari Result: Job Details</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <link
@@ -239,8 +248,16 @@
               const post = data.data;
               detailTitle.innerText = post.title;
               breadcrumbTitle.innerText = post.title;
-              document.title = post.title + ' - SarkariNaukri.in';
-              document.getElementById('metaDescription').setAttribute('content', post.description.substring(0, 160));
+              document.title = post.title + ' - Sarkari Result';
+              
+              const shortDesc = post.description ? post.description.substring(0, 160) : 'Check out the latest Sarkari Result updates.';
+              const metaDesc = document.getElementById('metaDescription');
+              const ogTitle = document.getElementById('ogTitle');
+              const ogDesc = document.getElementById('ogDescription');
+              
+              if (metaDesc) metaDesc.setAttribute('content', shortDesc);
+              if (ogTitle) ogTitle.setAttribute('content', post.title + ' | Sarkari Result');
+              if (ogDesc) ogDesc.setAttribute('content', shortDesc);
 
               // Reuse the formatting logic from main.js
               const row = (label, value, color = '') =>
