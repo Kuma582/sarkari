@@ -1,6 +1,6 @@
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:5000/api'
-    : 'https://sarkari-ilnr.onrender.com/api'; // Replace with your actual Render URL later
+    : 'https://sarkari-ilnr.onrender.com/api'; // FIXED URL - DO NOT CHANGE
 
 const api = {
     async request(endpoint, method = 'GET', body = null, isFormData = false) {
