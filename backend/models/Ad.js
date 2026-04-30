@@ -4,16 +4,20 @@ const adSchema = new mongoose.Schema({
   location: {
     type: String,
     required: true,
-    enum: ['header', 'sidebar', 'between_posts', 'footer'],
+    enum: ['header', 'sidebar', 'between_posts', 'footer', 'modal', 'popup'],
     unique: true
   },
   code: {
     type: String,
-    required: true
+    default: ''
   },
   isEnabled: {
     type: Boolean,
     default: true
+  },
+  popupDuration: {
+    type: Number,
+    default: 20  // seconds
   }
 }, { timestamps: true });
 

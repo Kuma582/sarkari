@@ -54,6 +54,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/posts', require('./routes/postRoutes'));
 app.use('/api/ads', require('./routes/adRoutes'));
 app.use('/api/stats', require('./routes/statsRoutes'));
+app.use('/api/visits', require('./routes/visitRoutes'));
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {

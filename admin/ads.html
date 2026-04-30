@@ -112,6 +112,48 @@
                     <textarea id="modal_code" class="form-control" rows="6" placeholder="Paste code here..."></textarea>
                     <button onclick="updateAd('modal')" class="btn btn-primary mt-4">Update Modal Ad</button>
                 </div>
+
+                <!-- Popup Ad (Full Width) -->
+                <div class="card" style="border: 2px solid var(--primary); grid-column: 1 / -1;">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h3 style="color: var(--primary);"><i class="fas fa-window-restore" style="margin-right:8px;"></i>Popup Ad (Full Screen on Page Load)</h3>
+                            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">Jab user site kholega yeh popup khulega. Timer khatam hone tak user band nahi kar sakta.</p>
+                        </div>
+                        <label class="switch-container">
+                            <input type="checkbox" id="popup_enabled" onchange="updateAd('popup')">
+                            <span>Enable</span>
+                        </label>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 220px; gap: 1.5rem; align-items: start;">
+                        <div class="form-group">
+                            <label>Popup Ad HTML Code (Image, Google Ads, ya kuch bhi paste karo)</label>
+                            <textarea id="popup_code" class="form-control" rows="7" placeholder="Paste popup ad HTML code here... e.g. <img src='...' style='width:100%'> ya Google AdSense code"></textarea>
+                        </div>
+                        <div>
+                            <div class="form-group">
+                                <label>Popup Duration (seconds)</label>
+                                <select id="popup_duration" class="form-control" style="font-size: 1.1rem; font-weight: 700; color: var(--primary); text-align: center;">
+                                    <option value="15">15 seconds</option>
+                                    <option value="20" selected>20 seconds</option>
+                                    <option value="25">25 seconds</option>
+                                    <option value="30">30 seconds</option>
+                                    <option value="45">45 seconds</option>
+                                    <option value="60">60 seconds</option>
+                                </select>
+                                <p style="font-size: 0.72rem; color: var(--text-muted); margin-top: 6px;">User is time tak popup band nahi kar sakta.</p>
+                            </div>
+                            <div style="background: rgba(99,102,241,0.08); border-radius: 10px; padding: 16px; text-align:center;">
+                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Countdown Preview</div>
+                                <div id="durationPreview" style="font-size: 2.5rem; font-weight: 800; color: var(--primary);">20</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">seconds</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="updateAd('popup')" class="btn btn-primary mt-4" style="width: 100%; justify-content: center; font-size: 1rem;">
+                        <i class="fas fa-save" style="margin-right: 8px;"></i> Save Popup Ad Settings
+                    </button>
+                </div>
             </div>
         </main>
     </div>
@@ -124,8 +166,15 @@
                 res.data.forEach(ad => {
                     const codeArea = document.getElementById(`${ad.location}_code`);
                     const enabledCheck = document.getElementById(`${ad.location}_enabled`);
-                    if (codeArea) codeArea.value = ad.code;
+                    if (codeArea) codeArea.value = ad.code || '';
                     if (enabledCheck) enabledCheck.checked = ad.isEnabled;
+                    // Popup duration
+                    if (ad.location === 'popup' && ad.popupDuration) {
+                        const sel = document.getElementById('popup_duration');
+                        if (sel) sel.value = String(ad.popupDuration);
+                        const prev = document.getElementById('durationPreview');
+                        if (prev) prev.innerText = ad.popupDuration + 's';
+                    }
                 });
             }
         }
@@ -133,14 +182,26 @@
         async function updateAd(location) {
             const code = document.getElementById(`${location}_code`).value;
             const isEnabled = document.getElementById(`${location}_enabled`).checked;
-            
-            const res = await api.updateAd(location, code, isEnabled);
+            let popupDuration = undefined;
+            if (location === 'popup') {
+                popupDuration = parseInt(document.getElementById('popup_duration').value);
+            }
+            const res = await api.updateAd(location, code, isEnabled, popupDuration);
             if (res && res.success) {
-                alert(`${location.charAt(0).toUpperCase() + location.slice(1)} Ad updated successfully!`);
+                alert(`Ad updated successfully!`);
             } else {
                 alert('Failed to update ad');
             }
         }
+
+        // Live preview of duration
+        document.addEventListener('DOMContentLoaded', () => {
+            const sel = document.getElementById('popup_duration');
+            const prev = document.getElementById('durationPreview');
+            if (sel && prev) {
+                sel.addEventListener('change', () => { prev.innerText = sel.value + 's'; });
+            }
+        });
 
         loadAds();
     </script>

@@ -1452,6 +1452,162 @@
         }
       }, 2000);
     </script>
+    <!-- Visit Tracker Ping -->
+    <script>
+      (function() {
+        const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+          ? 'http://localhost:5000/api'
+          : 'https://sarkari-ilnr.onrender.com/api';
+        fetch(`${API}/visits/ping`, { method: 'POST' }).catch(() => {});
+      })();
+    </script>
+    <!-- ===== POPUP AD OVERLAY ===== -->
+    <div id="popupAdOverlay" style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.85);
+        z-index: 99999;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    ">
+        <!-- Ad Box -->
+        <div style="
+            background: #fff;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 92%;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            position: relative;
+        ">
+            <!-- Top bar with timer -->
+            <div style="
+                background: linear-gradient(90deg, #cc0000, #003399);
+                color: #fff;
+                padding: 10px 18px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                font-size: 13px;
+                font-weight: 700;
+            ">
+                <span style="letter-spacing:0.5px;">📢 Advertisement</span>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span id="popupTimerText" style="font-size:12px; opacity:0.85;">Please wait...</span>
+                    <div id="popupCountdown" style="
+                        background: rgba(255,255,255,0.2);
+                        border-radius: 50%;
+                        width: 38px;
+                        height: 38px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 16px;
+                        font-weight: 900;
+                        border: 2px solid rgba(255,255,255,0.5);
+                    ">20</div>
+                    <!-- Close btn (hidden until timer done) -->
+                    <button id="popupCloseBtn" onclick="closePopupAd()" style="
+                        display: none;
+                        background: rgba(255,255,255,0.2);
+                        border: 1.5px solid rgba(255,255,255,0.5);
+                        color: #fff;
+                        border-radius: 6px;
+                        padding: 4px 12px;
+                        cursor: pointer;
+                        font-weight: 700;
+                        font-size: 13px;
+                    ">✕ Close</button>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div style="height:4px; background:#eee;">
+                <div id="popupProgressBar" style="
+                    height: 100%;
+                    background: linear-gradient(90deg, #cc0000, #f5a623);
+                    width: 100%;
+                    transition: width 1s linear;
+                "></div>
+            </div>
+
+            <!-- Ad Content -->
+            <div id="popupAdContent" style="padding: 20px; min-height: 200px; text-align:center;"></div>
+        </div>
+    </div>
+
+    <script>
+    (async function initPopupAd() {
+        try {
+            const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                ? 'http://localhost:5000/api'
+                : 'https://sarkari-ilnr.onrender.com/api';
+
+            const res = await fetch(`${API}/ads?t=${Date.now()}`);
+            const data = await res.json();
+
+            if (!data.success) return;
+
+            const popupAd = data.data.find(ad => ad.location === 'popup' && ad.isEnabled);
+            if (!popupAd || !popupAd.code) return;
+
+            const duration = parseInt(popupAd.popupDuration) || 20;
+            let remaining = duration;
+
+            // Populate ad content
+            document.getElementById('popupAdContent').innerHTML = popupAd.code;
+
+            // Show overlay
+            const overlay = document.getElementById('popupAdOverlay');
+            overlay.style.display = 'flex';
+
+            const countdown = document.getElementById('popupCountdown');
+            const progressBar = document.getElementById('popupProgressBar');
+            const timerText = document.getElementById('popupTimerText');
+            const closeBtn = document.getElementById('popupCloseBtn');
+
+            countdown.innerText = remaining;
+            progressBar.style.width = '100%';
+
+            // Start countdown
+            const interval = setInterval(() => {
+                remaining--;
+                countdown.innerText = remaining;
+                progressBar.style.width = ((remaining / duration) * 100) + '%';
+
+                if (remaining <= 5) {
+                    timerText.innerText = 'Closing soon...';
+                    countdown.style.background = 'rgba(255,80,80,0.4)';
+                }
+
+                if (remaining <= 0) {
+                    clearInterval(interval);
+                    closeBtn.style.display = 'block';
+                    countdown.style.display = 'none';
+                    timerText.innerText = 'You can now close';
+                    // Auto close after 3 more seconds
+                    setTimeout(closePopupAd, 3000);
+                }
+            }, 1000);
+
+        } catch(e) {
+            console.log('Popup ad load failed:', e);
+        }
+    })();
+
+    function closePopupAd() {
+        const overlay = document.getElementById('popupAdOverlay');
+        if (overlay) {
+            overlay.style.opacity = '0';
+            overlay.style.transition = 'opacity 0.4s';
+            setTimeout(() => { overlay.style.display = 'none'; }, 400);
+        }
+    }
+    window.closePopupAd = closePopupAd;
+    </script>
 </body>
+
 
 </html>

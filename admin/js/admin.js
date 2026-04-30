@@ -71,8 +71,8 @@ const api = {
         return this.request('/ads');
     },
 
-    updateAd(location, code, isEnabled) {
-        return this.request('/ads', 'POST', { location, code, isEnabled });
+    updateAd(location, code, isEnabled, popupDuration) {
+        return this.request('/ads', 'POST', { location, code, isEnabled, popupDuration });
     }
 };
 
