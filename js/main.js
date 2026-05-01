@@ -270,17 +270,18 @@ const init = () => {
     renderCategoryList('Admission', 'admissions');
     renderTicker();
     renderAds();
+};
 
-    // Check if we need to open a category modal from URL
+document.addEventListener('DOMContentLoaded', () => {
+    init();
+
+    // Check if we need to open a category modal from URL (Only on first load)
     const urlParams = new URLSearchParams(window.location.search);
     const category = urlParams.get('category');
     if (category) {
         setTimeout(() => openCategoryModal(category), 500);
     }
-};
 
-document.addEventListener('DOMContentLoaded', () => {
-    init();
     // Auto refresh every 30 seconds to stay updated without overloading the server
     setInterval(init, 30000);
 });

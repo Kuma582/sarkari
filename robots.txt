@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin/
 Disallow: /*?*
 
-Sitemap: https://sarkari-ilnr.netlify.app/sitemap.xml
+Sitemap: https://sarkari-ilnr.onrender.com/sitemap.xml
