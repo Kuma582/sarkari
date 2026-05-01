@@ -110,11 +110,33 @@ async function renderAds() {
             if (container) {
                 if (ad.isEnabled) {
                     container.innerHTML = ad.code;
+                    // Execute any scripts within the injected code (essential for manual AdSense units)
+                    executeScripts(container);
                 } else {
                     container.innerHTML = ''; // Clear container if ad is disabled
                 }
             }
         });
+    }
+}
+
+// Helper to execute scripts in dynamically injected content
+function executeScripts(container) {
+    const scripts = container.getElementsByTagName('script');
+    for (let i = 0; i < scripts.length; i++) {
+        const oldScript = scripts[i];
+        const newScript = document.createElement('script');
+        
+        // Copy attributes
+        Array.from(oldScript.attributes).forEach(attr => {
+            newScript.setAttribute(attr.name, attr.value);
+        });
+        
+        // Copy content
+        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+        
+        // Replace old script with new one to trigger execution
+        oldScript.parentNode.replaceChild(newScript, oldScript);
     }
 }
 
