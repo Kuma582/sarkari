@@ -107,8 +107,12 @@ async function renderAds() {
     if (res && res.success) {
         res.data.forEach(ad => {
             const container = document.getElementById(`ad-${ad.location}`);
-            if (container && ad.isEnabled) {
-                container.innerHTML = ad.code;
+            if (container) {
+                if (ad.isEnabled) {
+                    container.innerHTML = ad.code;
+                } else {
+                    container.innerHTML = ''; // Clear container if ad is disabled
+                }
             }
         });
     }
@@ -196,8 +200,7 @@ async function filterByKeyword(kw) {
 window.filterByKeyword = filterByKeyword;
 
 function viewAll(title) {
-    alert(`Showing all posts for ${title}...`);
-    // Ideally this would redirect to a category page
+    openCategoryModal(title);
 }
 window.viewAll = viewAll;
 
@@ -228,38 +231,31 @@ async function openCategoryModal(category) {
 
     document.getElementById('categoryModalTitle').innerText = category;
     const listEl = document.getElementById('categoryModalList');
-    listEl.innerHTML = '<div class="text-center p-4"><div class="spinner-border text-primary" role="status"></div></div>';
+    listEl.innerHTML = '<div class="text-center p-4"><div class="spinner-border text-primary" role="status"></div><p class="mt-2" style="font-size:12px; color:#666;">Loading ' + category + '...</p></div>';
     categoryModalInstance.show();
 
-    // Ensure we have posts loaded
-    if (!window.allPosts || window.allPosts.length === 0) {
-        const res = await fetchData('/posts');
-        if (res && res.success) {
-            window.allPosts = res.data.filter(post => post.status === 'published');
-        } else {
-            listEl.innerHTML = `<li style="padding: 15px; text-align: center; color: var(--danger);">Failed to load posts.</li>`;
+    // Fetch only the specific category to make it much faster
+    const res = await fetchData(`/posts?category=${category}&limit=50`);
+    
+    if (res && res.success) {
+        if (res.data.length === 0) {
+            listEl.innerHTML = `<li style="padding: 15px; text-align: center; color: #666;">No posts available in ${category} right now.</li>`;
             return;
         }
+
+        listEl.innerHTML = res.data.map(post => {
+            const isNew = isDateWithin24Hours(post.createdAt) ? '<span class="new-badge">★NEW</span>' : '';
+            return `
+                <li>
+                    <a href="javascript:void(0)" onclick="showPostDetail('${post._id}')">
+                        <i class="fas fa-hand-point-right"></i> ${post.title} ${isNew}
+                    </a>
+                </li>
+            `;
+        }).join('');
+    } else {
+        listEl.innerHTML = `<li style="padding: 15px; text-align: center; color: var(--danger);">Failed to load posts. Please try again.</li>`;
     }
-
-    // Filter posts
-    const posts = window.allPosts.filter(p => p.category === category || p.category + 's' === category || category.includes(p.category));
-
-    if (posts.length === 0) {
-        listEl.innerHTML = `<li style="padding: 15px; text-align: center; color: #666;">No posts available in ${category} right now.</li>`;
-        return;
-    }
-
-    listEl.innerHTML = posts.map(post => {
-        const isNew = isDateWithin24Hours(post.createdAt) ? '<span class="new-badge">★NEW</span>' : '';
-        return `
-            <li>
-                <a href="javascript:void(0)" onclick="showPostDetail('${post._id}')">
-                    <i class="fas fa-hand-point-right"></i> ${post.title} ${isNew}
-                </a>
-            </li>
-        `;
-    }).join('');
 }
 window.openCategoryModal = openCategoryModal;
 
@@ -274,10 +270,17 @@ const init = () => {
     renderCategoryList('Admission', 'admissions');
     renderTicker();
     renderAds();
+
+    // Check if we need to open a category modal from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const category = urlParams.get('category');
+    if (category) {
+        setTimeout(() => openCategoryModal(category), 500);
+    }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
     init();
-    // Auto refresh every 15 seconds to show latest updates
-    setInterval(init, 15000);
+    // Auto refresh every 30 seconds to stay updated without overloading the server
+    setInterval(init, 30000);
 });

@@ -77,10 +77,23 @@ router.post('/upload', protect, authorize('Super Admin'), upload.single('media')
     return res.status(400).json({ success: false, message: 'No file uploaded' });
   }
   
-  // Return the public URL for the uploaded file
-  // Using relative URL so it works regardless of domain
-  const fileUrl = `/uploads/${req.file.filename}`;
-  res.json({ success: true, url: fileUrl });
+  try {
+    // Read the file and convert to Base64
+    const filePath = req.file.path;
+    const fileData = fs.readFileSync(filePath);
+    const base64Data = fileData.toString('base64');
+    const mimeType = req.file.mimetype;
+    const dataUri = `data:${mimeType};base64,${base64Data}`;
+
+    // Delete the temporary file from disk
+    fs.unlinkSync(filePath);
+
+    // Return the Data URI instead of a relative URL
+    res.json({ success: true, url: dataUri });
+  } catch (error) {
+    console.error('Upload conversion error:', error);
+    res.status(500).json({ success: false, message: 'Error processing upload' });
+  }
 });
 
 module.exports = router;

@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Ads - Sarkari Result Admin</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w2.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23003399%22/><text y=%22.9em%22 font-size=%2270%22 font-family=%22Arial%22 font-weight=%22bold%22 x=%2250%%22 text-anchor=%22middle%22 fill=%22%23f5a623%22>SR</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/admin.css">
 </head>
+
 <body>
     <div class="admin-layout">
         <!-- Sidebar -->
@@ -18,22 +21,26 @@
             <nav>
                 <ul style="list-style: none;">
                     <li style="margin-bottom: 0.5rem;">
-                        <a href="dashboard.html" class="btn" style="width: 100%; justify-content: flex-start; color: var(--text-muted);">
+                        <a href="dashboard.html" class="btn"
+                            style="width: 100%; justify-content: flex-start; color: var(--text-muted);">
                             <i class="fas fa-home"></i> Dashboard
                         </a>
                     </li>
                     <li style="margin-bottom: 0.5rem;">
-                        <a href="posts.html" class="btn" style="width: 100%; justify-content: flex-start; color: var(--text-muted);">
+                        <a href="posts.html" class="btn"
+                            style="width: 100%; justify-content: flex-start; color: var(--text-muted);">
                             <i class="fas fa-file-invoice"></i> Manage Posts
                         </a>
                     </li>
                     <li style="margin-bottom: 0.5rem;">
-                        <a href="ads.html" class="btn" style="width: 100%; justify-content: flex-start; background: rgba(99, 102, 241, 0.1); color: var(--primary);">
+                        <a href="ads.html" class="btn"
+                            style="width: 100%; justify-content: flex-start; background: rgba(99, 102, 241, 0.1); color: var(--primary);">
                             <i class="fas fa-ad"></i> Manage Ads
                         </a>
                     </li>
                     <li style="margin-top: 3rem;">
-                        <button onclick="logout()" class="btn" style="width: 100%; justify-content: flex-start; color: var(--danger);">
+                        <button onclick="logout()" class="btn"
+                            style="width: 100%; justify-content: flex-start; color: var(--danger);">
                             <i class="fas fa-sign-out-alt"></i> Logout
                         </button>
                     </li>
@@ -47,7 +54,8 @@
                 <h1>Advertisement Management</h1>
             </header>
 
-            <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
+            <div class="grid"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
                 <!-- Header Ad -->
                 <div class="card">
                     <div class="flex justify-between items-center mb-4">
@@ -57,7 +65,8 @@
                             <span>Enable</span>
                         </label>
                     </div>
-                    <textarea id="header_code" class="form-control" rows="6" placeholder="Paste Google AdSense or Custom Ad code here..."></textarea>
+                    <textarea id="header_code" class="form-control" rows="6"
+                        placeholder="Paste Google AdSense or Custom Ad code here..."></textarea>
                     <button onclick="updateAd('header')" class="btn btn-primary mt-4">Update Header Ad</button>
                 </div>
 
@@ -70,7 +79,8 @@
                             <span>Enable</span>
                         </label>
                     </div>
-                    <textarea id="sidebar_code" class="form-control" rows="6" placeholder="Paste code here..."></textarea>
+                    <textarea id="sidebar_code" class="form-control" rows="6"
+                        placeholder="Paste code here..."></textarea>
                     <button onclick="updateAd('sidebar')" class="btn btn-primary mt-4">Update Sidebar Ad</button>
                 </div>
 
@@ -83,8 +93,10 @@
                             <span>Enable</span>
                         </label>
                     </div>
-                    <textarea id="between_posts_code" class="form-control" rows="6" placeholder="Paste code here..."></textarea>
-                    <button onclick="updateAd('between_posts')" class="btn btn-primary mt-4">Update Between Posts Ad</button>
+                    <textarea id="between_posts_code" class="form-control" rows="6"
+                        placeholder="Paste code here..."></textarea>
+                    <button onclick="updateAd('between_posts')" class="btn btn-primary mt-4">Update Between Posts
+                        Ad</button>
                 </div>
 
                 <!-- Footer Ad -->
@@ -96,7 +108,8 @@
                             <span>Enable</span>
                         </label>
                     </div>
-                    <textarea id="footer_code" class="form-control" rows="6" placeholder="Paste code here..."></textarea>
+                    <textarea id="footer_code" class="form-control" rows="6"
+                        placeholder="Paste code here..."></textarea>
                     <button onclick="updateAd('footer')" class="btn btn-primary mt-4">Update Footer Ad</button>
                 </div>
 
@@ -117,8 +130,10 @@
                 <div class="card" style="border: 2px solid var(--primary); grid-column: 1 / -1;">
                     <div class="flex justify-between items-center mb-4">
                         <div>
-                            <h3 style="color: var(--primary);"><i class="fas fa-window-restore" style="margin-right:8px;"></i>Popup Ad (Full Screen on Page Load)</h3>
-                            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">Jab user site kholega yeh popup khulega. Timer khatam hone tak user band nahi kar sakta.</p>
+                            <h3 style="color: var(--primary);"><i class="fas fa-window-restore"
+                                    style="margin-right:8px;"></i>Popup Ad (Full Screen on Page Load)</h3>
+                            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">Jab user site
+                                kholega yeh popup khulega. Timer khatam hone tak user band nahi kar sakta.</p>
                         </div>
                         <label class="switch-container">
                             <input type="checkbox" id="popup_enabled" onchange="updateAd('popup')">
@@ -129,35 +144,46 @@
                         <div class="form-group">
                             <label>Direct Upload Image / Video for Popup Ad</label>
                             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                                <input type="file" id="popup_file" accept="image/*,video/*" class="form-control" style="padding: 6px;">
-                                <button onclick="uploadPopupMedia()" class="btn btn-primary" style="flex-shrink: 0;"><i class="fas fa-upload"></i> Upload</button>
+                                <input type="file" id="popup_file" accept="image/*,video/*" class="form-control"
+                                    style="padding: 6px;">
+                                <button onclick="uploadPopupMedia()" class="btn btn-primary" style="flex-shrink: 0;"><i
+                                        class="fas fa-upload"></i> Upload</button>
                             </div>
-                            <small id="uploadStatus" style="color: var(--success); display: none; font-weight: 600; margin-bottom: 10px;">Uploaded successfully!</small>
+                            <small id="uploadStatus"
+                                style="color: var(--success); display: none; font-weight: 600; margin-bottom: 10px;">Uploaded
+                                successfully!</small>
 
                             <label style="margin-top: 15px;">Or Paste Custom HTML Code (Google Ads, etc.)</label>
-                            <textarea id="popup_code" class="form-control" rows="5" placeholder="If not uploading a file, paste HTML code here..."></textarea>
+                            <textarea id="popup_code" class="form-control" rows="5"
+                                placeholder="If not uploading a file, paste HTML code here..."></textarea>
                         </div>
                         <div>
                             <div class="form-group">
                                 <label>Popup Duration (seconds)</label>
-                                <select id="popup_duration" class="form-control" style="font-size: 1.1rem; font-weight: 700; color: var(--primary); text-align: center;">
-                                    <option value="15">15 seconds</option>
+                                <select id="popup_duration" class="form-control"
+                                    style="font-size: 1.1rem; font-weight: 700; color: var(--primary); text-align: center;">
+                                    <option value="5">5 seconds</option>
                                     <option value="20" selected>20 seconds</option>
                                     <option value="25">25 seconds</option>
                                     <option value="30">30 seconds</option>
                                     <option value="45">45 seconds</option>
                                     <option value="60">60 seconds</option>
                                 </select>
-                                <p style="font-size: 0.72rem; color: var(--text-muted); margin-top: 6px;">User is time tak popup band nahi kar sakta.</p>
+                                <p style="font-size: 0.72rem; color: var(--text-muted); margin-top: 6px;">User is time
+                                    tak popup band nahi kar sakta.</p>
                             </div>
-                            <div style="background: rgba(99,102,241,0.08); border-radius: 10px; padding: 16px; text-align:center;">
-                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Countdown Preview</div>
-                                <div id="durationPreview" style="font-size: 2.5rem; font-weight: 800; color: var(--primary);">20</div>
+                            <div
+                                style="background: rgba(99,102,241,0.08); border-radius: 10px; padding: 16px; text-align:center;">
+                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">Countdown
+                                    Preview</div>
+                                <div id="durationPreview"
+                                    style="font-size: 2.5rem; font-weight: 800; color: var(--primary);">20</div>
                                 <div style="font-size: 0.75rem; color: var(--text-muted);">seconds</div>
                             </div>
                         </div>
                     </div>
-                    <button onclick="updateAd('popup')" class="btn btn-primary mt-4" style="width: 100%; justify-content: center; font-size: 1rem;">
+                    <button onclick="updateAd('popup')" class="btn btn-primary mt-4"
+                        style="width: 100%; justify-content: center; font-size: 1rem;">
                         <i class="fas fa-save" style="margin-right: 8px;"></i> Save Popup Ad Settings
                     </button>
                 </div>
@@ -230,7 +256,7 @@
                 // Fetch the API directly because admin.js request doesn't easily handle FormData right now without tweaking
                 const token = localStorage.getItem('adminToken');
                 const cacheBuster = `t=${Date.now()}`;
-                
+
                 const response = await fetch(`${API_URL}/ads/upload?${cacheBuster}`, {
                     method: 'POST',
                     headers: {
@@ -238,13 +264,13 @@
                     },
                     body: formData
                 });
-                
+
                 const res = await response.json();
-                
+
                 if (res && res.success) {
                     status.innerText = 'Uploaded successfully!';
                     status.style.color = 'var(--success)';
-                    
+
                     let htmlCode = '';
                     if (file.type.startsWith('video/')) {
                         htmlCode = `<video src="${res.url}" autoplay loop muted style="max-width: 100%; border-radius: 8px;"></video>`;
@@ -253,8 +279,12 @@
                     }
 
                     document.getElementById('popup_code').value = htmlCode;
+
+                    // Automatically save settings to make it permanent immediately
+                    await updateAd('popup');
                     
-                    // Note: User can still hit save settings. Or we can auto save
+                    status.innerText = 'Uploaded & Saved permanently!';
+                    status.style.color = 'var(--success)';
                 } else {
                     status.innerText = 'Upload failed: ' + (res ? res.message : 'Error');
                     status.style.color = 'var(--danger)';
@@ -268,4 +298,5 @@
         loadAds();
     </script>
 </body>
+
 </html>
