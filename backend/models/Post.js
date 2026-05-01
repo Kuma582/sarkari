@@ -23,6 +23,9 @@ const postSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  applyStartDate: {
+    type: Date
+  },
   lastDate: {
     type: Date
   },

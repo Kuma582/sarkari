@@ -121,11 +121,17 @@
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div class="form-group">
+                        <label>Apply Start Date</label>
+                        <input type="date" id="applyStartDate" class="form-control">
+                    </div>
+                    <div class="form-group">
                         <label>Last Date to Apply</label>
                         <input type="date" id="lastDate" class="form-control">
                     </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
                     <div class="form-group">
-                        <label>Scheduled At (Publish Time)</label>
+                        <label>Scheduled At (Publish Time) - Set when this post becomes live</label>
                         <input type="datetime-local" id="scheduledAt" class="form-control">
                     </div>
                 </div>
@@ -436,6 +442,7 @@
             document.getElementById('category').value = post.category;
             document.getElementById('department').value = post.department || '';
             document.getElementById('description').value = post.description;
+            if (post.applyStartDate) document.getElementById('applyStartDate').value = post.applyStartDate.split('T')[0];
             if (post.lastDate) document.getElementById('lastDate').value = post.lastDate.split('T')[0];
             if (post.scheduledAt) document.getElementById('scheduledAt').value = post.scheduledAt.substring(0, 16);
             document.getElementById('importantLinks').value = JSON.stringify(post.importantLinks || []);
@@ -504,6 +511,7 @@
                 formData.append('category', document.getElementById('category').value);
                 formData.append('department', document.getElementById('department').value);
                 formData.append('description', document.getElementById('description').value);
+                formData.append('applyStartDate', document.getElementById('applyStartDate').value);
                 formData.append('lastDate', document.getElementById('lastDate').value);
                 formData.append('scheduledAt', document.getElementById('scheduledAt').value);
                 formData.append('importantLinks', getLinksAsJson());

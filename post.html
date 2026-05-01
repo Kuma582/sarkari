@@ -272,7 +272,8 @@
                   `<div style="background:${color}; color:#fff; font-weight:700; font-size:1.05rem; padding:10px 16px; margin:20px 0 0; border-radius:4px 4px 0 0; letter-spacing:0.5px;"><i class="fas fa-check-circle" style="margin-right:8px;"></i>${title}</div>`;
 
               const datesRows = [
-                  row('Apply Start / Last Date', post.lastDate ? new Date(post.lastDate).toLocaleDateString('en-IN') : null, '#cc0000'),
+                  row('Apply Start Date', post.applyStartDate ? new Date(post.applyStartDate).toLocaleDateString('en-IN') : null, '#0066cc'),
+                  row('Last Date to Apply', post.lastDate ? new Date(post.lastDate).toLocaleDateString('en-IN') : null, '#cc0000'),
                   row('Admit Card Date', post.admitCardDate, '#0066cc'),
                   row('Exam Date', post.examDate, '#0066cc'),
                   row('Result Date', post.resultDate, '#007700'),
