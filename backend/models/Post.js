@@ -29,9 +29,10 @@ const postSchema = new mongoose.Schema({
   lastDate: {
     type: Date
   },
-  applicationFees: {
-    type: String
-  },
+  applicationFees: [{
+    categories: [String],
+    amount: String
+  }],
   eligibility: {
     type: String
   },
@@ -65,6 +66,27 @@ const postSchema = new mongoose.Schema({
   vacancyDetails: {
     type: String // JSON string to store department/male/female counts
   },
+  subTitle: {
+    type: String
+  },
+  batchName: {
+    type: String
+  },
+  shortInfo: {
+    type: String
+  },
+  physicalEligibility: {
+    type: String
+  },
+  payScale: {
+    type: String
+  },
+  selectionMode: {
+    type: String
+  },
+  howToApply: {
+    type: String
+  },
   ageLimit: {
     type: String
   },
@@ -91,6 +113,56 @@ const postSchema = new mongoose.Schema({
   },
   authorName: {
     type: String
+  },
+  minAge: {
+    type: String
+  },
+  maxAge: {
+    type: String
+  },
+  ageRelaxation: {
+    type: String
+  },
+  officialWebsite: {
+    type: String
+  },
+  selectionProcess: {
+    type: String
+  },
+  dynamicDates: [{
+    label: String,
+    value: String
+  }],
+  eligibilityPoints: [String],
+  howToApplySteps: [String],
+  selectionProcessSteps: [String],
+  customSections: [{
+    title: String,
+    contentType: {
+      type: String,
+      enum: ['Text', 'Bullets', 'Table']
+    },
+    content: mongoose.Schema.Types.Mixed
+  }],
+  vacancyTableTitle: {
+    type: String
+  },
+  metaTitle: {
+    type: String,
+    maxLength: 60
+  },
+  metaDescription: {
+    type: String,
+    maxLength: 160
+  },
+  focusKeyword: {
+    type: String
+  },
+  relatedKeywords: [String],
+  slug: {
+    type: String,
+    unique: true,
+    sparse: true
   }
 }, { timestamps: true });
 

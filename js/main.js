@@ -59,14 +59,17 @@ async function renderLatestJobs(page = 1) {
             return;
         }
 
-        tbody.innerHTML = res.data.map(post => `
-            <tr onclick="showPostDetail('${post._id}')" style="cursor:pointer;">
-                <td><a href="javascript:void(0)">${post.title}${post.status === 'New' ? '<span class="new-label ms-1">NEW</span>' : ''}</a></td>
-                <td><span class="badge-blue">${post.category}</span></td>
-                <td>-</td>
-                <td style="color:var(--red);font-weight:700;">${post.lastDate ? new Date(post.lastDate).toLocaleDateString() : 'N/A'}</td>
-            </tr>
-        `).join('');
+        tbody.innerHTML = res.data.map(post => {
+            const isNew = post.status === 'New' || isDateWithin24Hours(post.createdAt);
+            return `
+                <tr onclick="showPostDetail('${post._id}')" style="cursor:pointer;">
+                    <td><a href="javascript:void(0)">${post.title}${isNew ? '<span class="new-label ms-1">NEW</span>' : ''}</a></td>
+                    <td><span class="badge-blue">${post.category}</span></td>
+                    <td>-</td>
+                    <td style="color:var(--red);font-weight:700;">${post.lastDate ? new Date(post.lastDate).toLocaleDateString() : 'N/A'}</td>
+                </tr>
+            `;
+        }).join('');
 
         renderPagination(res.pages, res.currentPage, 'jobPagination', renderLatestJobs);
     } else {
@@ -86,16 +89,19 @@ async function renderCategoryList(category, elementId) {
             return;
         }
 
-        container.innerHTML = res.data.map(post => `
-            <li onclick="showPostDetail('${post._id}')" style="cursor:pointer;">
-                <div class="bullet"></div>
-                <div>
-                    <a href="javascript:void(0)">${post.title}</a>
-                    <div class="job-meta">${post.description.substring(0, 50)}...</div>
-                </div>
-                ${post.status === 'New' ? '<span class="new-label">NEW</span>' : ''}
-            </li>
-        `).join('');
+        container.innerHTML = res.data.map(post => {
+            const isNew = post.status === 'New' || isDateWithin24Hours(post.createdAt);
+            return `
+                <li onclick="showPostDetail('${post._id}')" style="cursor:pointer;">
+                    <div class="bullet"></div>
+                    <div>
+                        <a href="javascript:void(0)">${post.title}</a>
+                        <div class="job-meta">${post.description.substring(0, 50)}...</div>
+                    </div>
+                    ${isNew ? '<span class="new-label">NEW</span>' : ''}
+                </li>
+            `;
+        }).join('');
     } else {
         container.innerHTML = '<li>Error loading data</li>';
     }
@@ -230,6 +236,14 @@ function joinTelegram() {
     window.open('https://t.me/SarkariNaukriOfficial', '_blank');
 }
 window.joinTelegram = joinTelegram;
+
+function isDateWithin24Hours(date) {
+    if (!date) return false;
+    const now = new Date();
+    const created = new Date(date);
+    const diff = now - created;
+    return diff < 24 * 60 * 60 * 1000; // 24 hours in ms
+}
 
 async function showPostDetail(id) {
     window.location.href = `post.html?id=${id}`;

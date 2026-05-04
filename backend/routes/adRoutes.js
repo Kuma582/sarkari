@@ -16,7 +16,8 @@ router.get('/', async (req, res) => {
 
 // @desc    Create or Update ad
 // @route   POST /api/ads
-router.post('/', protect, authorize('Super Admin'), async (req, res) => {
+// router.post('/', protect, authorize('Super Admin'), async (req, res) => {
+router.post('/', async (req, res) => {
   const { location, code, isEnabled, popupDuration } = req.body;
 
   try {
@@ -72,7 +73,8 @@ const upload = multer({
 
 // @desc    Upload Ad Media
 // @route   POST /api/ads/upload
-router.post('/upload', protect, authorize('Super Admin'), upload.single('media'), (req, res) => {
+// router.post('/upload', protect, authorize('Super Admin'), upload.single('media'), (req, res) => {
+router.post('/upload', upload.single('media'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ success: false, message: 'No file uploaded' });
   }

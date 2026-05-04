@@ -15,15 +15,15 @@ const createAdmin = async () => {
     console.log('Old admin deleted (if any).');
 
     const admin = new User({
-      username: 'admin',
-      password: 'admin123',
+      username: 'anmol',
+      password: 'sharma@2356',
       role: 'Super Admin'
     });
 
     await admin.save();
-    console.log('✅ Default Admin created successfully!');
-    console.log('ID: admin');
-    console.log('Password: admin123');
+    console.log('✅ Permanent Admin created successfully!');
+    console.log('ID: anmol');
+    console.log('Password: sharma@2356');
     process.exit();
   } catch (error) {
     console.error('Error creating admin:', error);

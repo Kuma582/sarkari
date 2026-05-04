@@ -3,46 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login - Sarkari Result</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w2.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23003399%22/><text y=%22.9em%22 font-size=%2270%22 font-family=%22Arial%22 font-weight=%22bold%22 x=%2250%%22 text-anchor=%22middle%22 fill=%22%23f5a623%22>SR</text></svg>">
+    <title>Admin Login - Sarkari Result Portal</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w2.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23cc0000' stroke='%23f5a623' stroke-width='3'/><text x='50' y='52' font-family='Arial' font-weight='900' font-size='40' fill='white' text-anchor='middle' dominant-baseline='central'>SR</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/admin.css">
 </head>
-<body class="login-container">
-    <div class="login-card">
-        <h1 style="text-align: center; margin-bottom: 2rem;">Admin Login</h1>
-        <form id="loginForm">
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" id="username" class="form-control" placeholder="Enter username" required>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="background: var(--primary); width: 64px; height: 64px; border-radius: 1rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.5rem; font-weight: bold; color: white; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);">
+                    SR
+                </div>
+                <h1 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Welcome Back</h1>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Please login to manage your portal</p>
             </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="password" class="form-control" placeholder="Enter password" required>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Username</label>
+                    <input type="text" id="username" class="form-control" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                
+                <div id="loginError" style="display: none; background: rgba(239, 68, 68, 0.1); color: var(--danger); padding: 0.75rem; border-radius: 0.5rem; font-size: 0.85rem; margin-bottom: 1.5rem; text-align: center;">
+                    <i class="fas fa-exclamation-circle"></i> Invalid username or password
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="loginBtn" style="width: 100%; justify-content: center; padding: 0.8rem; font-size: 1rem;">
+                    <span id="btnText">Login to Dashboard</span>
+                    <span id="btnSpinner" style="display: none;"><i class="fas fa-spinner fa-spin"></i></span>
+                </button>
+            </form>
+
+            <div style="margin-top: 2rem; text-align: center;">
+                <p style="font-size: 0.8rem; color: var(--text-muted);">
+                    &copy; 2026 Sarkari Result Portal <br>
+                    Secure Admin Panel
+                </p>
             </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
-                Sign In
-            </button>
-            <p id="message" style="text-align: center; margin-top: 1rem; font-size: 0.9rem;"></p>
-        </form>
+        </div>
     </div>
 
     <script src="js/admin.js"></script>
     <script>
+        // Check if already logged in
+        if (localStorage.getItem('adminToken')) {
+            window.location.href = 'dashboard.html';
+        }
+
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            const message = document.getElementById('message');
+            const errorDiv = document.getElementById('loginError');
+            const btn = document.getElementById('loginBtn');
+            const btnText = document.getElementById('btnText');
+            const btnSpinner = document.getElementById('btnSpinner');
 
-            const res = await api.login(username, password);
-            if (res && res.success) {
-                localStorage.setItem('adminToken', res.token);
-                localStorage.setItem('adminUser', JSON.stringify(res.user));
-                window.location.href = 'dashboard.html';
-            } else {
-                message.style.color = 'var(--danger)';
-                message.innerText = res ? res.message : 'Login failed';
+            // UI Feedback
+            errorDiv.style.display = 'none';
+            btn.disabled = true;
+            btnText.style.display = 'none';
+            btnSpinner.style.display = 'inline-block';
+
+            try {
+                const res = await api.login(username, password);
+                
+                if (res && res.success) {
+                    localStorage.setItem('adminToken', res.token);
+                    localStorage.setItem('adminUser', JSON.stringify(res.user));
+                    window.location.href = 'dashboard.html';
+                } else {
+                    errorDiv.innerText = res.message || 'Invalid credentials. Please try again.';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (err) {
+                errorDiv.innerText = 'Server error. Please try again later.';
+                errorDiv.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btnText.style.display = 'inline-block';
+                btnSpinner.style.display = 'none';
             }
         });
     </script>

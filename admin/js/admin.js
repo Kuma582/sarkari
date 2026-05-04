@@ -1,4 +1,6 @@
-const API_URL = 'https://sarkari-ilnr.onrender.com/api'; // HARDCODED FOR PRODUCTIONFIX
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/api'
+    : 'https://sarkari-ilnr.onrender.com/api';
 
 const api = {
     async request(endpoint, method = 'GET', body = null, isFormData = false) {
@@ -30,8 +32,10 @@ const api = {
             const response = await fetch(url, config);
             const data = await response.json();
             
-            if (response.status === 401 || response.status === 403) {
+            if ((response.status === 401 || response.status === 403) && !endpoint.includes('/auth/login')) {
+                console.warn('Session expired or unauthorized. Redirecting to login...');
                 localStorage.removeItem('adminToken');
+                localStorage.removeItem('adminUser');
                 window.location.href = 'login.html';
                 return null;
             }
@@ -81,13 +85,27 @@ const api = {
 };
 
 // Check Auth on page load
-if (!window.location.pathname.includes('login.html')) {
-    if (!localStorage.getItem('adminToken')) {
+(function() {
+    const path = window.location.pathname;
+    const token = localStorage.getItem('adminToken');
+    const isLoginPage = path.includes('login.html') || path.endsWith('/admin/');
+    
+    console.log('Admin Auth Check:', { path, hasToken: !!token, isLoginPage });
+
+    if (!isLoginPage && !token) {
+        console.warn('No token found, redirecting to login...');
         window.location.href = 'login.html';
     }
-}
+    
+    if (isLoginPage && token) {
+        // If already logged in, don't stay on login page
+        console.log('Already logged in, redirecting to dashboard...');
+        window.location.href = 'dashboard.html';
+    }
+})();
 
 function logout() {
     localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
     window.location.href = 'login.html';
 }

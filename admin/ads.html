@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Ads - Sarkari Result Admin</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w2.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23003399%22/><text y=%22.9em%22 font-size=%2270%22 font-family=%22Arial%22 font-weight=%22bold%22 x=%2250%%22 text-anchor=%22middle%22 fill=%22%23f5a623%22>SR</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w2.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23cc0000' stroke='%23f5a623' stroke-width='3'/><text x='50' y='52' font-family='Arial' font-weight='900' font-size='40' fill='white' text-anchor='middle' dominant-baseline='central'>SR</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/admin.css">
@@ -15,9 +15,22 @@
     <div class="admin-layout">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <h2 style="margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.8rem;">
-                <i class="fas fa-user-shield text-primary"></i> Admin
-            </h2>
+            <div style="margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.8rem;">
+                <div style="width: 45px; height: 45px;">
+                  <svg viewBox="0 0 100 100" xmlns="http://www.w2.org/2000/svg">
+                    <circle cx="50" cy="50" r="48" fill="#cc0000" stroke="#f5a623" stroke-width="3"/>
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="white" stroke-width="1" stroke-dasharray="2,2"/>
+                    <text x="50" y="44" font-family="Arial" font-weight="900" font-size="16" fill="white" text-anchor="middle">SARKARI</text>
+                    <text x="50" y="62" font-family="Arial" font-weight="900" font-size="16" fill="white" text-anchor="middle">RESULT</text>
+                    <path d="M35 50 L65 50" stroke="#f5a623" stroke-width="2"/>
+                    <polygon points="50,46 52,50 56,50 53,53 54,57 50,55 46,57 47,53 44,50 48,50" fill="#f5a623"/>
+                  </svg>
+                </div>
+                <div>
+                    <div style="font-weight: 800; font-size: 1.1rem; line-height: 1;">SARKARI <span style="color: var(--primary);">RESULT</span></div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1px;">JUNCTION ADMIN</div>
+                </div>
+            </div>
             <nav>
                 <ul style="list-style: none;">
                     <li style="margin-bottom: 0.5rem;">

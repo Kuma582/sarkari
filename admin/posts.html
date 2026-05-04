@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Posts - Sarkari Result Admin</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w2.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23003399%22/><text y=%22.9em%22 font-size=%2270%22 font-family=%22Arial%22 font-weight=%22bold%22 x=%2250%%22 text-anchor=%22middle%22 fill=%22%23f5a623%22>SR</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w2.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23cc0000' stroke='%23f5a623' stroke-width='3'/><text x='50' y='52' font-family='Arial' font-weight='900' font-size='40' fill='white' text-anchor='middle' dominant-baseline='central'>SR</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/admin.css">
@@ -13,9 +13,22 @@
     <div class="admin-layout">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <h2 style="margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.8rem;">
-                <i class="fas fa-user-shield text-primary"></i> Admin
-            </h2>
+            <div style="margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.8rem;">
+                <div style="width: 45px; height: 45px;">
+                  <svg viewBox="0 0 100 100" xmlns="http://www.w2.org/2000/svg">
+                    <circle cx="50" cy="50" r="48" fill="#cc0000" stroke="#f5a623" stroke-width="3"/>
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="white" stroke-width="1" stroke-dasharray="2,2"/>
+                    <text x="50" y="44" font-family="Arial" font-weight="900" font-size="16" fill="white" text-anchor="middle">SARKARI</text>
+                    <text x="50" y="62" font-family="Arial" font-weight="900" font-size="16" fill="white" text-anchor="middle">RESULT</text>
+                    <path d="M35 50 L65 50" stroke="#f5a623" stroke-width="2"/>
+                    <polygon points="50,46 52,50 56,50 53,53 54,57 50,55 46,57 47,53 44,50 48,50" fill="#f5a623"/>
+                  </svg>
+                </div>
+                <div>
+                    <div style="font-weight: 800; font-size: 1.1rem; line-height: 1;">SARKARI <span style="color: var(--primary);">RESULT</span></div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1px;">JUNCTION ADMIN</div>
+                </div>
+            </div>
             <nav>
                 <ul style="list-style: none;">
                     <li style="margin-bottom: 0.5rem;">
@@ -46,9 +59,14 @@
         <main class="main-content">
             <header class="flex justify-between items-center mb-4">
                 <h1>Job Posts</h1>
-                <button onclick="openModal()" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> New Post
-                </button>
+                <div class="flex gap-2">
+                    <button onclick="openAIWizard()" class="btn" style="background: var(--primary); color: white; border: none; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);">
+                        <i class="fas fa-magic"></i> AI Wizard
+                    </button>
+                    <button onclick="openModal()" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> New Post
+                    </button>
+                </div>
             </header>
 
             <div class="card">
@@ -86,192 +104,260 @@
     </div>
 
     <!-- Modal for Add/Edit -->
-    <div id="postModal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 2rem;">
-        <div class="card" style="width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto;">
-            <div class="flex justify-between items-center mb-4">
-                <h2 id="modalTitle">Add New Post</h2>
-                <button onclick="closeModal()" class="btn" style="background: transparent; color: var(--text-muted);"><i class="fas fa-times"></i></button>
+    <div id="postModal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; overflow-y: auto; padding: 20px;">
+        <div class="card" style="width: 100%; max-width: 1100px; margin: 0 auto; position: relative; padding: 0; display: flex; flex-direction: column; height: calc(100vh - 40px); border: 1px solid rgba(255,255,255,0.1); overflow: hidden;">
+            <!-- Modal Header (Sticky) -->
+            <div style="padding: 1rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.05); background: #1e293b; z-index: 10; display: flex; justify-content: space-between; align-items: center;">
+                <h2 id="modalTitle" style="font-size: 1.25rem; display: flex; align-items: center; gap: 0.8rem; margin: 0;">
+                    <i class="fas fa-edit text-primary"></i> Add New Post
+                </h2>
+                <button onclick="closeModal()" class="btn" style="background: transparent; color: var(--text-muted); font-size: 1.2rem; padding: 0;"><i class="fas fa-times"></i></button>
             </div>
-            <form id="postForm">
-                <input type="hidden" id="postId">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div class="form-group">
-                        <label>Title</label>
-                        <input type="text" id="title" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Category</label>
-                        <select id="category" class="form-control" required>
-                            <option>Latest Jobs</option>
-                            <option>Results</option>
-                            <option>Admit Cards</option>
-                            <option>Answer Keys</option>
-                            <option>Syllabus</option>
-                            <option>Admission</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Department (e.g. SSC, UPSC, Railway)</label>
-                    <input type="text" id="department" class="form-control" placeholder="e.g. Staff Selection Commission">
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="description" class="form-control" rows="4" required></textarea>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div class="form-group">
-                        <label>Apply Start Date</label>
-                        <input type="date" id="applyStartDate" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label>Last Date to Apply</label>
-                        <input type="date" id="lastDate" class="form-control">
-                    </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
-                    <div class="form-group">
-                        <label>Scheduled At (Publish Time) - Set when this post becomes live</label>
-                        <input type="datetime-local" id="scheduledAt" class="form-control">
-                    </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div class="form-group">
-                        <label>Admit Card Date (e.g. June 2025)</label>
-                        <input type="text" id="admitCardDate" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label>Exam Date (e.g. 15-20 July 2025)</label>
-                        <input type="text" id="examDate" class="form-control">
-                    </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div class="form-group">
-                        <label>Result Date</label>
-                        <input type="text" id="resultDate" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label>Answer Key Date</label>
-                        <input type="text" id="answerKeyDate" class="form-control">
-                    </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div class="form-group">
-                        <label>Exam Mode (Written / Physical / Direct)</label>
-                        <input type="text" id="examMode" class="form-control" placeholder="e.g. Written Exam">
-                    </div>
-                    <div class="form-group">
-                        <label>Payment Mode (Online / Offline)</label>
-                        <input type="text" id="paymentMode" class="form-control" placeholder="e.g. Online (Net Banking, Card)">
-                    </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div class="form-group" style="grid-column: span 2;">
-                        <label>Application Fees (Category-wise)</label>
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-top: 0.5rem; background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px;">
-                            <div>
-                                <label style="font-size:0.75rem; color: var(--text-muted);">General / OBC / EWS</label>
-                                <input type="text" id="fee_general" class="form-control" placeholder="e.g. ₹500">
+            
+            <!-- Modal Body (Scrollable Wrapper) -->
+            <form id="postForm" class="admin-form" style="display: flex; flex-direction: column; flex: 1; overflow: hidden; margin: 0;">
+                <div style="padding: 2rem; overflow-y: auto; flex: 1; background: #0f172a;" id="modalScrollBody">
+                    <input type="hidden" id="postId">
+                    
+                    <!-- Basic Info Section -->
+                    <div class="form-section mb-6">
+                        <h3 class="section-title"><i class="fas fa-info-circle"></i> Basic Information</h3>
+                        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+                            <div class="form-group">
+                                <label>Post Title</label>
+                                <input type="text" id="title" class="form-control" placeholder="e.g. IB Security Assistant Result 2026" oninput="generateSlug(this.value)" required>
                             </div>
-                            <div>
-                                <label style="font-size:0.75rem; color: var(--text-muted);">SC / ST</label>
-                                <input type="text" id="fee_scst" class="form-control" placeholder="e.g. ₹250">
-                            </div>
-                            <div>
-                                <label style="font-size:0.75rem; color: var(--text-muted);">PH / Divyang</label>
-                                <input type="text" id="fee_ph" class="form-control" placeholder="e.g. ₹0">
-                            </div>
-                            <div>
-                                <label style="font-size:0.75rem; color: var(--text-muted);">Female (All Cat.)</label>
-                                <input type="text" id="fee_female" class="form-control" placeholder="e.g. ₹250">
-                            </div>
-                            <div>
-                                <label style="font-size:0.75rem; color: var(--text-muted);">Ex-Serviceman</label>
-                                <input type="text" id="fee_exsm" class="form-control" placeholder="e.g. ₹0">
-                            </div>
-                            <div>
-                                <label style="font-size:0.75rem; color: var(--text-muted);">Payment Mode</label>
-                                <input type="text" id="paymentMode" class="form-control" placeholder="Online / Offline">
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select id="category" class="form-control" required>
+                                    <option>Latest Jobs</option>
+                                    <option>Results</option>
+                                    <option>Admit Cards</option>
+                                    <option>Answer Keys</option>
+                                    <option>Syllabus</option>
+                                    <option>Admission</option>
+                                    <option>Other</option>
+                                </select>
                             </div>
                         </div>
-                        <input type="hidden" id="applicationFees">
-                    </div>
-                    <div class="form-group">
-                        <label>Age Limit (e.g. 18-25 Years)</label>
-                        <input type="text" id="ageLimit" class="form-control">
-                    </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div class="form-group" style="grid-column: span 2;">
-                        <label>Eligibility / Education (Check all that apply)</label>
-                        <div id="eligibilityOptions" style="display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 0.5rem; background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px;">
-                            <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.85rem;">
-                                <input type="checkbox" class="edu-checkbox" value="10th Pass"> 10th Pass
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.85rem;">
-                                <input type="checkbox" class="edu-checkbox" value="12th Pass"> 12th Pass
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.85rem;">
-                                <input type="checkbox" class="edu-checkbox" value="ITI"> ITI
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.85rem;">
-                                <input type="checkbox" class="edu-checkbox" value="Diploma"> Diploma
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.85rem;">
-                                <input type="checkbox" class="edu-checkbox" value="Graduation"> Graduation
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.85rem;">
-                                <input type="checkbox" class="edu-checkbox" value="Post Graduation"> Post Graduation
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.85rem;">
-                                <input type="checkbox" class="edu-checkbox" value="B.Ed"> B.Ed
-                            </label>
-                            <input type="text" id="otherEligibility" class="form-control" placeholder="Other specific requirements" style="flex: 1; min-width: 200px; height: 32px; font-size: 0.8rem;">
+                        <div class="form-group mt-3">
+                            <label>Introduction / Description</label>
+                            <textarea id="description" class="form-control" rows="3" placeholder="Brief overview of the post..." required></textarea>
                         </div>
-                        <input type="hidden" id="eligibility">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem;">
+                            <div class="form-group">
+                                <label>Department</label>
+                                <input type="text" id="department" class="form-control" placeholder="e.g. Ministry of Home Affairs">
+                            </div>
+                            <div class="form-group">
+                                <label>Scheduled Publish Time</label>
+                                <input type="datetime-local" id="scheduledAt" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SEO SETTINGS SECTION (NEW) -->
+                    <div class="form-section mb-6" style="border: 1px solid var(--primary); background: rgba(99, 102, 241, 0.05);">
+                        <h3 class="section-title"><i class="fas fa-search"></i> SEO Optimization Settings</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <div class="form-group">
+                                <label>SEO URL Slug (SEO-Friendly)</label>
+                                <input type="text" id="slug" class="form-control" placeholder="ssc-cgl-recruitment-2026-online-form">
+                            </div>
+                            <div class="form-group">
+                                <label>Meta Title (Max 60 Chars)</label>
+                                <input type="text" id="metaTitle" class="form-control" placeholder="Best for Google search result title">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Meta Description (Max 160 Chars)</label>
+                            <textarea id="metaDescription" class="form-control" rows="2" placeholder="Brief summary for search results..."></textarea>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem;">
+                            <div class="form-group">
+                                <label>Focus Keyword</label>
+                                <input type="text" id="focusKeyword" class="form-control" placeholder="e.g. SSC CGL 2026">
+                            </div>
+                            <div class="form-group">
+                                <label>Related Keywords (Comma separated)</label>
+                                <input type="text" id="relatedKeywords" class="form-control" placeholder="SSC CGL Exam, SSC CGL 2026 Apply, SSC Jobs">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <!-- Left Column -->
+                        <div>
+                            <!-- Important Dates Section -->
+                            <div class="form-section mb-6">
+                                <div class="flex justify-between items-center mb-3">
+                                    <h3 class="section-title"><i class="fas fa-calendar-alt"></i> Important Dates</h3>
+                                    <button type="button" onclick="addDateRow()" class="btn btn-sm" style="background: rgba(99, 102, 241, 0.1); color: var(--primary);">
+                                        <i class="fas fa-plus"></i> Add Row
+                                    </button>
+                                </div>
+                                <div id="datesContainer" class="dynamic-rows-container"></div>
+                            </div>
+
+                            <!-- Application Fee Section -->
+                            <div class="form-section mb-6">
+                                <div class="flex justify-between items-center mb-3">
+                                    <h3 class="section-title"><i class="fas fa-rupee-sign"></i> Application Fee</h3>
+                                    <button type="button" onclick="addFeeGroupRow()" class="btn btn-sm" style="background: rgba(99, 102, 241, 0.1); color: var(--primary);">
+                                        <i class="fas fa-plus"></i> Add Fee Group
+                                    </button>
+                                </div>
+                                <div id="feesContainer" class="dynamic-rows-container"></div>
+                                <div class="form-group mt-3">
+                                    <label>Payment Mode</label>
+                                    <input type="text" id="paymentMode" class="form-control" placeholder="e.g. Online (Net Banking, Card)">
+                                </div>
+                            </div>
+
+                            <!-- Age Limit Section -->
+                            <div class="form-section mb-6">
+                                <h3 class="section-title"><i class="fas fa-user-clock"></i> Age Limit Details</h3>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                                    <div class="form-group">
+                                        <label>Minimum Age</label>
+                                        <input type="text" id="minAge" class="form-control" placeholder="18 Years">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Maximum Age</label>
+                                        <input type="text" id="maxAge" class="form-control" placeholder="27 Years">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Age Relaxation</label>
+                                    <input type="text" id="ageRelaxation" class="form-control" placeholder="As per rules">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div>
+                            <!-- Eligibility Points -->
+                            <div class="form-section mb-6">
+                                <div class="flex justify-between items-center mb-3">
+                                    <h3 class="section-title"><i class="fas fa-check-double"></i> Eligibility Points</h3>
+                                    <button type="button" onclick="addEligibilityRow()" class="btn btn-sm" style="background: rgba(99, 102, 241, 0.1); color: var(--primary);">
+                                        <i class="fas fa-plus"></i> Add Point
+                                    </button>
+                                </div>
+                                <div id="eligibilityContainer" class="dynamic-rows-container"></div>
+                            </div>
+
+                            <!-- How To Apply -->
+                            <div class="form-section mb-6">
+                                <div class="flex justify-between items-center mb-3">
+                                    <h3 class="section-title"><i class="fas fa-walking"></i> How To Apply</h3>
+                                    <button type="button" onclick="addHowToApplyRow()" class="btn btn-sm" style="background: rgba(99, 102, 241, 0.1); color: var(--primary);">
+                                        <i class="fas fa-plus"></i> Add Step
+                                    </button>
+                                </div>
+                                <div id="howToApplyContainer" class="dynamic-rows-container"></div>
+                            </div>
+
+                            <!-- Selection Process -->
+                            <div class="form-section mb-6">
+                                <div class="flex justify-between items-center mb-3">
+                                    <h3 class="section-title"><i class="fas fa-user-check"></i> Selection Process</h3>
+                                    <button type="button" onclick="addSelectionRow()" class="btn btn-sm" style="background: rgba(99, 102, 241, 0.1); color: var(--primary);">
+                                        <i class="fas fa-plus"></i> Add Point
+                                    </button>
+                                </div>
+                                <div id="selectionContainer" class="dynamic-rows-container"></div>
+                            </div>
+
+                            <!-- Important Links -->
+                            <div class="form-section mb-6">
+                                <div class="flex justify-between items-center mb-3">
+                                    <h3 class="section-title"><i class="fas fa-link"></i> Important Links</h3>
+                                    <button type="button" onclick="addLinkRow()" class="btn btn-sm" style="background: rgba(99, 102, 241, 0.1); color: var(--primary);">
+                                        <i class="fas fa-plus"></i> Add Link
+                                    </button>
+                                </div>
+                                <div id="linksContainer" class="dynamic-rows-container"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vacancy Details Section (Full Width) -->
+                    <div class="form-section mb-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="section-title"><i class="fas fa-th-list"></i> Vacancy Table</h3>
+                            <button type="button" onclick="addVacancyRow()" class="btn btn-sm" style="background: rgba(34, 197, 94, 0.1); color: var(--success);">
+                                <i class="fas fa-plus"></i> Add Row
+                            </button>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label style="font-size: 0.8rem;">Vacancy Table Custom Title (Optional)</label>
+                            <input type="text" id="vacancyTableTitle" class="form-control" placeholder="e.g. IB Security Assistant (MT) Vacancy Details">
+                        </div>
+                        <div id="vacancyContainer" class="dynamic-rows-container"></div>
+                    </div>
+
+                    <!-- Custom Sections Builder (Full Width) -->
+                    <div class="form-section mb-6" style="border: 2px dashed rgba(99, 102, 241, 0.2); padding: 1.5rem; border-radius: 12px; background: rgba(99, 102, 241, 0.02);">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="section-title" style="margin-bottom: 0;"><i class="fas fa-layer-group"></i> Custom Content Sections</h3>
+                            <button type="button" onclick="addCustomSection()" class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus"></i> Add New Section
+                            </button>
+                        </div>
+                        <div id="customSectionsContainer"></div>
+                    </div>
+
+                    <!-- Additional Info Section (Full Width) -->
+                    <div class="form-section mb-6">
+                        <h3 class="section-title"><i class="fas fa-plus-circle"></i> Additional Information</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <div class="form-group">
+                                <label>Official Website URL</label>
+                                <input type="url" id="officialWebsite" class="form-control" placeholder="https://example.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Salary / Pay Scale</label>
+                                <input type="text" id="payScale" class="form-control" placeholder="e.g. Rs. 21700 - 69100/-">
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
-                    <div class="form-group">
-                        <label>Total Vacancies</label>
-                        <input type="number" id="totalVacancies" class="form-control">
-                    </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div class="form-group">
-                        <label>Male Vacancies</label>
-                        <input type="number" id="maleVacancies" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label>Female Vacancies</label>
-                        <input type="number" id="femaleVacancies" class="form-control">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Post-wise Vacancy Details</label>
-                    <div id="vacancyContainer" style="margin-bottom: 0.5rem;">
-                        <!-- Vacancy rows will be added here -->
-                    </div>
-                    <button type="button" onclick="addVacancyRow()" class="btn" style="font-size: 0.8rem; background: rgba(255,255,255,0.05); color: var(--success);">
-                        <i class="fas fa-plus"></i> Add Post Detail
+
+                <!-- Modal Footer (Sticky) -->
+                <div style="padding: 1.5rem 2rem; background: #1e293b; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: flex-end; gap: 1rem; z-index: 10;">
+                    <button type="button" onclick="closeModal()" class="btn" style="background: #334155; color: white;">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn" style="padding: 0.75rem 2.5rem; font-size: 1rem;">
+                        <span id="btnText">SAVE POST</span>
+                        <span id="btnSpinner" style="display:none;"><i class="fas fa-spinner fa-spin"></i></span>
                     </button>
-                    <input type="hidden" id="vacancyDetails">
                 </div>
-                <div class="form-group">
-                    <label>Important Links</label>
-                    <div id="linksContainer" style="margin-bottom: 0.5rem;">
-                        <!-- Link rows will be added here -->
-                    </div>
-                    <button type="button" onclick="addLinkRow()" class="btn" style="font-size: 0.8rem; background: rgba(255,255,255,0.05); color: var(--primary);">
-                        <i class="fas fa-plus"></i> Add Link
-                    </button>
-                    <input type="hidden" id="importantLinks">
-                </div>
-                <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
-                    <span id="btnText">Save Post</span>
-                    <span id="btnSpinner" style="display: none;"><i class="fas fa-spinner fa-spin ms-2"></i></span>
-                </button>
             </form>
+        </div>
+    </div>
+
+    <!-- AI Wizard Modal -->
+    <div id="aiWizardModal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1100; align-items: center; justify-content: center; padding: 2rem;">
+        <div class="card" style="width: 100%; max-width: 700px;">
+            <div class="flex justify-between items-center mb-4">
+                <h2><i class="fas fa-magic text-primary"></i> AI Content Wizard</h2>
+                <button onclick="closeAIWizard()" class="btn" style="background: transparent; color: var(--text-muted);"><i class="fas fa-times"></i></button>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
+                Paste the SEO-optimized JSON generated by your AI system to automatically fill the entire form and SEO metadata.
+            </p>
+            <div class="form-group">
+                <label>JSON Data</label>
+                <textarea id="aiJsonInput" class="form-control" rows="12" placeholder='{ "title": "...", "metaTitle": "...", ... }' style="font-family: monospace; font-size: 0.85rem;"></textarea>
+            </div>
+            <div class="flex gap-2 mt-4">
+                <button onclick="copyExpertPrompt()" class="btn" style="flex: 1; background: rgba(255,255,255,0.05); color: var(--text-muted);">
+                    <i class="fas fa-copy"></i> Copy SEO Prompt
+                </button>
+                <button onclick="processAIJson()" class="btn btn-primary" style="flex: 2; justify-content: center;">
+                    <i class="fas fa-bolt"></i> Process & Fill Form
+                </button>
+            </div>
         </div>
     </div>
 
@@ -279,214 +365,334 @@
     <script>
         let currentPosts = [];
 
+        // --- DYNAMIC ROW HANDLERS ---
+
+        function createRow(containerId, html) {
+            const container = document.getElementById(containerId);
+            const row = document.createElement('div');
+            row.className = 'dynamic-row flex gap-2 mb-2 items-center';
+            row.innerHTML = html + `<button type="button" onclick="this.parentElement.remove()" class="btn text-danger" style="padding: 0 10px;"><i class="fas fa-trash"></i></button>`;
+            container.appendChild(row);
+            return row;
+        }
+
+        function addDateRow(label = '', value = '') {
+            createRow('datesContainer', `
+                <input type="text" placeholder="Date Label" class="form-control d-label" value="${label}" style="flex: 1;">
+                <input type="text" placeholder="Value" class="form-control d-value" value="${value}" style="flex: 1;">
+            `);
+        }
+
+        function addEligibilityRow(text = '') {
+            createRow('eligibilityContainer', `
+                <input type="text" placeholder="Eligibility Point..." class="form-control e-point" value="${text}" style="flex: 1;">
+            `);
+        }
+
+        function addHowToApplyRow(text = '') {
+            createRow('howToApplyContainer', `
+                <input type="text" placeholder="Step description..." class="form-control h-step" value="${text}" style="flex: 1;">
+            `);
+        }
+
+        function addSelectionRow(text = '') {
+            createRow('selectionContainer', `
+                <input type="text" placeholder="Selection criteria..." class="form-control s-point" value="${text}" style="flex: 1;">
+            `);
+        }
+
         function addLinkRow(label = '', url = '') {
-            const container = document.getElementById('linksContainer');
+            createRow('linksContainer', `
+                <input type="text" placeholder="Link Label" class="form-control link-label" value="${label}" style="flex: 1;">
+                <input type="text" placeholder="URL" class="form-control link-url" value="${url}" style="flex: 2;">
+            `);
+        }
+
+        function addVacancyRow(post = '', total = '', eligibility = '') {
+            createRow('vacancyContainer', `
+                <div style="flex: 2; display: flex; flex-direction: column; gap: 0.5rem;">
+                    <input type="text" placeholder="Post Name" class="form-control v-post" value="${post}">
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem;">
+                    <input type="text" placeholder="Total" class="form-control v-total" value="${total}">
+                </div>
+                <div style="flex: 3; display: flex; flex-direction: column; gap: 0.5rem;">
+                    <textarea placeholder="Eligibility (Bullets on new lines)" class="form-control v-elig" rows="2" style="font-size: 0.85rem; padding: 0.5rem;">${eligibility}</textarea>
+                </div>
+            `);
+        }
+
+        function generateSlug(text) {
+            const slug = text.toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-')
+                .trim();
+            document.getElementById('slug').value = slug;
+        }
+
+        // --- FEE GROUP HANDLERS ---
+
+        function addFeeGroupRow(data = { categories: [], amount: '' }) {
+            const container = document.getElementById('feesContainer');
             const row = document.createElement('div');
-            row.className = 'link-row flex gap-2 mb-2';
+            row.className = 'fee-group-row dynamic-row flex gap-2 mb-3 items-start';
+            row.style = "background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); width: 100%;";
+            
+            const cats = ['General', 'OBC', 'EWS', 'SC', 'ST', 'PH', 'Female', 'ESM'];
+            let checksHtml = cats.map(c => `
+                <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; cursor: pointer; color: var(--text-muted);">
+                    <input type="checkbox" value="${c}" ${(data.categories && data.categories.includes(c)) ? 'checked' : ''} class="fee-cat-check"> ${c}
+                </label>
+            `).join('');
+
             row.innerHTML = `
-                <input type="text" placeholder="Label (e.g. Apply)" class="form-control link-label" value="${label}" style="flex: 1;">
-                <input type="text" placeholder="URL (Google link, etc.)" class="form-control link-url" value="${url}" style="flex: 2;">
-                <button type="button" onclick="this.parentElement.remove()" class="btn text-danger" style="padding: 0 10px;"><i class="fas fa-times"></i></button>
+                <div style="flex: 1;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 0.5rem;">
+                        ${checksHtml}
+                    </div>
+                    <div class="flex gap-2 items-center">
+                        <input type="text" placeholder="Amount" class="form-control fee-amount" value="${data.amount || ''}" style="max-width: 150px;">
+                    </div>
+                </div>
+                <button type="button" onclick="this.parentElement.remove()" class="btn text-danger" style="padding: 5px;"><i class="fas fa-trash"></i></button>
             `;
             container.appendChild(row);
         }
 
-        function getLinksAsJson() {
-            const rows = document.querySelectorAll('.link-row');
-            const links = [];
-            rows.forEach(row => {
-                const label = row.querySelector('.link-label').value;
-                const url = row.querySelector('.link-url').value;
-                if (label && url) links.push({ label, url });
-            });
-            return JSON.stringify(links);
-        }
-
-        function addVacancyRow(post = '', count = '') {
-            const container = document.getElementById('vacancyContainer');
-            const row = document.createElement('div');
-            row.className = 'vacancy-row flex gap-2 mb-2';
-            row.innerHTML = `
-                <input type="text" placeholder="Post Name (e.g. General)" class="form-control v-post" value="${post}" style="flex: 2;">
-                <input type="number" placeholder="Count" class="form-control v-count" value="${count}" style="flex: 1;">
-                <button type="button" onclick="this.parentElement.remove()" class="btn text-danger" style="padding: 0 10px;"><i class="fas fa-times"></i></button>
-            `;
-            container.appendChild(row);
-        }
-
-        function getVacancyAsJson() {
-            const rows = document.querySelectorAll('.vacancy-row');
+        function getFeesData() {
+            const rows = document.querySelectorAll('.fee-group-row');
             const data = [];
             rows.forEach(row => {
-                const post = row.querySelector('.v-post').value;
-                const count = row.querySelector('.v-count').value;
-                if (post && count) data.push({ post, total: count });
-            });
-            return JSON.stringify(data);
-        }
-
-        function getEligibility() {
-            const checkboxes = document.querySelectorAll('.edu-checkbox:checked');
-            const selected = Array.from(checkboxes).map(cb => cb.value);
-            const other = document.getElementById('otherEligibility').value.trim();
-            if (other) selected.push(other);
-            return selected.join(', ');
-        }
-
-        function setEligibility(value = '') {
-            const checkboxes = document.querySelectorAll('.edu-checkbox');
-            checkboxes.forEach(cb => cb.checked = false);
-            document.getElementById('otherEligibility').value = '';
-            
-            if (!value) return;
-            
-            const parts = value.split(',').map(p => p.trim());
-            const knownValues = Array.from(checkboxes).map(cb => cb.value);
-            
-            const others = [];
-            parts.forEach(p => {
-                const cb = Array.from(checkboxes).find(c => c.value === p);
-                if (cb) {
-                    cb.checked = true;
-                } else {
-                    others.push(p);
+                const checked = Array.from(row.querySelectorAll('.fee-cat-check:checked')).map(cb => cb.value);
+                const amount = row.querySelector('.fee-amount').value.trim();
+                if (checked.length > 0 && amount) {
+                    data.push({ categories: checked, amount });
                 }
             });
+            return data;
+        }
+
+        // --- CUSTOM SECTIONS HANDLERS ---
+
+        function addCustomSection(data = { title: '', contentType: 'Text', content: '' }) {
+            const container = document.getElementById('customSectionsContainer');
+            const sectionId = 'cs_' + Date.now() + Math.floor(Math.random() * 1000);
+            const div = document.createElement('div');
+            div.className = 'custom-section-card mb-4';
+            div.id = sectionId;
+            div.style = "background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 10px; position: relative;";
             
-            if (others.length > 0) {
-                document.getElementById('otherEligibility').value = others.join(', ');
+            div.innerHTML = `
+                <button type="button" onclick="this.parentElement.remove()" class="btn text-danger" style="position: absolute; top: 10px; right: 10px;">
+                    <i class="fas fa-times-circle"></i>
+                </button>
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="form-group">
+                        <label style="font-size: 0.8rem;">Section Title</label>
+                        <input type="text" class="form-control cs-title" value="${data.title || ''}" placeholder="e.g. Selection Criteria">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size: 0.8rem;">Type</label>
+                        <select class="form-control cs-type" onchange="switchCSContent('${sectionId}', this.value)">
+                            <option value="Text" ${data.contentType === 'Text' ? 'selected' : ''}>Text</option>
+                            <option value="Bullets" ${data.contentType === 'Bullets' ? 'selected' : ''}>Bullets</option>
+                            <option value="Table" ${data.contentType === 'Table' ? 'selected' : ''}>Table</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="cs-content-area" id="${sectionId}_content"></div>
+            `;
+            container.appendChild(div);
+            switchCSContent(sectionId, data.contentType || 'Text', data.content || '');
+        }
+
+        function switchCSContent(sectionId, type, content = '') {
+            const area = document.getElementById(sectionId + '_content');
+            area.innerHTML = '';
+            if (type === 'Text') area.innerHTML = `<textarea class="form-control cs-data" rows="4">${content}</textarea>`;
+            else if (type === 'Bullets') {
+                area.innerHTML = `<div class="cs-bullets-list"></div><button type="button" onclick="addCSBulletRow('${sectionId}')" class="btn btn-sm mt-2"><i class="fas fa-plus"></i> Add Bullet</button>`;
+                const list = area.querySelector('.cs-bullets-list');
+                if (Array.isArray(content)) content.forEach(c => addCSBulletRow(sectionId, c));
+                else if (content) addCSBulletRow(sectionId, content);
+            } else if (type === 'Table') {
+                area.innerHTML = `<div class="cs-table-rows"></div><button type="button" onclick="addCSTableRow('${sectionId}')" class="btn btn-sm mt-2"><i class="fas fa-plus"></i> Add Row</button>`;
+                const list = area.querySelector('.cs-table-rows');
+                if (Array.isArray(content)) content.forEach(c => addCSTableRow(sectionId, c.key, c.value));
+                else addCSTableRow(sectionId);
             }
         }
 
-        function getFeesAsString() {
-            const gen    = document.getElementById('fee_general').value.trim();
-            const scst   = document.getElementById('fee_scst').value.trim();
-            const ph     = document.getElementById('fee_ph').value.trim();
-            const female = document.getElementById('fee_female').value.trim();
-            const exsm   = document.getElementById('fee_exsm').value.trim();
-            const parts  = [];
-            if (gen)    parts.push(`Gen/OBC/EWS: ${gen}`);
-            if (scst)   parts.push(`SC/ST: ${scst}`);
-            if (ph)     parts.push(`PH/Divyang: ${ph}`);
-            if (female) parts.push(`Female: ${female}`);
-            if (exsm)   parts.push(`Ex-SM: ${exsm}`);
-            return parts.join(' | ');
+        function addCSBulletRow(sectionId, value = '') {
+            const list = document.querySelector(`#${sectionId} .cs-bullets-list`);
+            const row = document.createElement('div');
+            row.className = 'flex gap-2 mb-2';
+            row.innerHTML = `<input type="text" class="form-control cs-bullet-input" value="${value}"><button type="button" onclick="this.parentElement.remove()" class="btn text-danger btn-sm"><i class="fas fa-trash"></i></button>`;
+            list.appendChild(row);
         }
 
-        function setFeesFromString(str = '') {
-            ['fee_general','fee_scst','fee_ph','fee_female','fee_exsm'].forEach(id => {
-                document.getElementById(id).value = '';
-            });
-            if (!str) return;
-            const map = { 'Gen/OBC/EWS': 'fee_general', 'SC/ST': 'fee_scst', 'PH/Divyang': 'fee_ph', 'Female': 'fee_female', 'Ex-SM': 'fee_exsm' };
-            str.split('|').forEach(part => {
-                const [key, val] = part.split(':').map(s => s.trim());
-                if (map[key] && val) document.getElementById(map[key]).value = val;
-            });
+        function addCSTableRow(sectionId, key = '', value = '') {
+            const list = document.querySelector(`#${sectionId} .cs-table-rows`);
+            const row = document.createElement('div');
+            row.className = 'flex gap-2 mb-2';
+            row.innerHTML = `<input type="text" class="form-control cs-table-key" value="${key}"><input type="text" class="form-control cs-table-val" value="${value}"><button type="button" onclick="this.parentElement.remove()" class="btn text-danger btn-sm"><i class="fas fa-trash"></i></button>`;
+            list.appendChild(row);
         }
+
+        function getCustomSectionsData() {
+            const sections = document.querySelectorAll('.custom-section-card');
+            const data = [];
+            sections.forEach(sec => {
+                const title = sec.querySelector('.cs-title').value.trim();
+                const contentType = sec.querySelector('.cs-type').value;
+                let content;
+                if (contentType === 'Text') content = sec.querySelector('.cs-data').value.trim();
+                else if (contentType === 'Bullets') content = Array.from(sec.querySelectorAll('.cs-bullet-input')).map(i => i.value.trim()).filter(v => v);
+                else if (contentType === 'Table') content = Array.from(sec.querySelectorAll('.flex.gap-2.mb-2')).map(row => ({ key: row.querySelector('.cs-table-key').value.trim(), value: row.querySelector('.cs-table-val').value.trim() })).filter(v => v.key || v.value);
+                if (title && content) data.push({ title, contentType, content });
+            });
+            return data;
+        }
+
+        function getDynamicData(containerId, selectors) {
+            const container = document.getElementById(containerId);
+            const rows = container.querySelectorAll('.dynamic-row');
+            const data = [];
+            rows.forEach(row => {
+                const item = {};
+                let hasValue = false;
+                selectors.forEach(sel => {
+                    const el = row.querySelector(sel.class);
+                    if (el) {
+                        const val = el.value.trim();
+                        if (val) { item[sel.key] = val; hasValue = true; }
+                    }
+                });
+                if (hasValue) {
+                    if (selectors.length === 1 && selectors[0].key === 'value') data.push(item.value);
+                    else data.push(item);
+                }
+            });
+            return data;
+        }
+
+        // --- MAIN FUNCTIONS ---
 
         async function fetchPosts() {
-            const tbody = document.getElementById('postsTableBody');
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem;"><i class="fas fa-spinner fa-spin me-2"></i> Loading posts...</td></tr>';
-            
-            const search = document.getElementById('searchInput').value;
-            const category = document.getElementById('categoryFilter').value;
-            const res = await api.getPosts(1, search, category);
-            if (res && res.success) {
+            const res = await api.getPosts();
+            if (res && res.data) {
                 currentPosts = res.data;
                 renderPosts();
-            } else {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem; color: var(--danger);">Failed to load posts.</td></tr>';
             }
         }
 
         function renderPosts() {
             const tbody = document.getElementById('postsTableBody');
-            tbody.innerHTML = currentPosts.map(post => `
-                <tr>
-                    <td>${post.title}</td>
-                    <td><span style="background: rgba(99,102,241,0.1); padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">${post.category}</span></td>
-                    <td style="font-size: 0.85rem;">${new Date(post.postDate).toLocaleDateString()}</td>
-                    <td><span style="color: ${post.isEnabled ? 'var(--success)' : 'var(--danger)'};">${post.isEnabled ? 'Active' : 'Disabled'}</span></td>
-                    <td>
-                        <div class="flex gap-2">
-                            <button onclick="editPost('${post._id}')" class="btn" style="padding: 4px 8px; background: rgba(255,255,255,0.05);"><i class="fas fa-edit text-primary"></i></button>
-                            <button onclick="deletePost('${post._id}')" class="btn" style="padding: 4px 8px; background: rgba(255,255,255,0.05);"><i class="fas fa-trash text-danger"></i></button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const cat = document.getElementById('categoryFilter').value;
+
+            tbody.innerHTML = currentPosts
+                .filter(p => p.title.toLowerCase().includes(search) && (!cat || p.category === cat))
+                .map(p => `
+                    <tr>
+                        <td>${p.title}</td>
+                        <td><span class="badge-blue">${p.category}</span></td>
+                        <td>${new Date(p.createdAt).toLocaleDateString()}</td>
+                        <td><span class="status-active">Active</span></td>
+                        <td>
+                            <div class="flex gap-2">
+                                <button onclick="openModal('${p._id}')" class="btn text-primary" style="padding: 5px;"><i class="fas fa-edit"></i></button>
+                                <button onclick="deletePost('${p._id}')" class="btn text-danger" style="padding: 5px;"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
         }
 
-        function openModal() {
+        function openModal(id = null) {
+            console.log('Opening Modal for ID:', id);
+            const modal = document.getElementById('postModal');
             document.getElementById('postForm').reset();
-            document.getElementById('linksContainer').innerHTML = '';
-            document.getElementById('vacancyContainer').innerHTML = '';
-            addLinkRow('Apply Online', ''); 
-            addVacancyRow('General', ''); // Default row
-            document.getElementById('postId').value = '';
-            document.getElementById('modalTitle').innerText = 'Add New Post';
-            document.getElementById('postModal').style.display = 'flex';
+            document.getElementById('postId').value = id || '';
+            document.getElementById('modalTitle').innerText = id ? 'Edit Post' : 'Add New Post';
+
+            ['datesContainer', 'feesContainer', 'vacancyContainer', 'eligibilityContainer', 'howToApplyContainer', 'selectionContainer', 'linksContainer', 'customSectionsContainer']
+                .forEach(cid => document.getElementById(cid).innerHTML = '');
+
+            if (id) {
+                const p = currentPosts.find(post => post._id === id);
+                console.log('Post found for edit:', p);
+                if (p) {
+                    try {
+                        document.getElementById('title').value = p.title || '';
+                        document.getElementById('category').value = p.category || '';
+                        document.getElementById('description').value = p.description || '';
+                        document.getElementById('department').value = p.department || '';
+                        document.getElementById('scheduledAt').value = p.scheduledAt ? p.scheduledAt.substring(0, 16) : '';
+                        document.getElementById('paymentMode').value = p.paymentMode || '';
+                        document.getElementById('minAge').value = p.minAge || '';
+                        document.getElementById('maxAge').value = p.maxAge || '';
+                        document.getElementById('ageRelaxation').value = p.ageRelaxation || '';
+                        document.getElementById('officialWebsite').value = p.officialWebsite || '';
+                        document.getElementById('payScale').value = p.payScale || '';
+                        document.getElementById('vacancyTableTitle').value = p.vacancyTableTitle || '';
+                        document.getElementById('slug').value = p.slug || '';
+                        document.getElementById('metaTitle').value = p.metaTitle || '';
+                        document.getElementById('metaDescription').value = p.metaDescription || '';
+                        document.getElementById('focusKeyword').value = p.focusKeyword || '';
+                        
+                        // Defensive keyword handling
+                        if (Array.isArray(p.relatedKeywords)) {
+                            document.getElementById('relatedKeywords').value = p.relatedKeywords.join(', ');
+                        } else if (typeof p.relatedKeywords === 'string') {
+                            document.getElementById('relatedKeywords').value = p.relatedKeywords;
+                        } else {
+                            document.getElementById('relatedKeywords').value = '';
+                        }
+
+                        if (Array.isArray(p.dynamicDates)) p.dynamicDates.forEach(d => addDateRow(d.label, d.value));
+                        if (Array.isArray(p.applicationFees)) p.applicationFees.forEach(f => addFeeGroupRow(f));
+                        
+                        if (p.vacancyDetails) {
+                            try {
+                                const v = typeof p.vacancyDetails === 'string' ? JSON.parse(p.vacancyDetails) : p.vacancyDetails;
+                                if (Array.isArray(v)) v.forEach(item => addVacancyRow(item.post, item.total, item.eligibility));
+                            } catch(e) { console.error('Vacancy parse error:', e); }
+                        }
+                        
+                        if (Array.isArray(p.eligibilityPoints)) p.eligibilityPoints.forEach(pt => addEligibilityRow(pt));
+                        if (Array.isArray(p.howToApplySteps)) p.howToApplySteps.forEach(s => addHowToApplyRow(s));
+                        if (Array.isArray(p.selectionProcessSteps)) p.selectionProcessSteps.forEach(pt => addSelectionRow(pt));
+                        if (Array.isArray(p.importantLinks)) p.importantLinks.forEach(l => addLinkRow(l.label, l.url));
+                        if (Array.isArray(p.customSections)) p.customSections.forEach(s => addCustomSection(s));
+                    } catch (err) {
+                        console.error('Error populating form:', err);
+                        alert('Error loading post details. Check console.');
+                    }
+                } else {
+                    console.error('Post not found in currentPosts array');
+                }
+            } else {
+                addDateRow('Application Start', ''); addDateRow('Last Date', '');
+                addFeeGroupRow({ categories: ['General', 'OBC', 'EWS'], amount: '' });
+                addVacancyRow('General', '', '');
+                addEligibilityRow(''); addHowToApplyRow(''); addSelectionRow('');
+                addLinkRow('Apply Online', '');
+            }
+
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            document.getElementById('modalScrollBody').scrollTop = 0;
         }
 
         function closeModal() {
             document.getElementById('postModal').style.display = 'none';
-        }
-
-        function editPost(id) {
-            const post = currentPosts.find(p => p._id === id);
-            if (!post) return;
-            
-            document.getElementById('postId').value = post._id;
-            document.getElementById('title').value = post.title;
-            document.getElementById('category').value = post.category;
-            document.getElementById('department').value = post.department || '';
-            document.getElementById('description').value = post.description;
-            if (post.applyStartDate) document.getElementById('applyStartDate').value = post.applyStartDate.split('T')[0];
-            if (post.lastDate) document.getElementById('lastDate').value = post.lastDate.split('T')[0];
-            if (post.scheduledAt) document.getElementById('scheduledAt').value = post.scheduledAt.substring(0, 16);
-            document.getElementById('importantLinks').value = JSON.stringify(post.importantLinks || []);
-            setFeesFromString(post.applicationFees || '');
-            document.getElementById('paymentMode').value = post.paymentMode || '';
-            document.getElementById('ageLimit').value = post.ageLimit || '';
-            setEligibility(post.eligibility || '');
-            document.getElementById('examMode').value = post.examMode || '';
-            document.getElementById('admitCardDate').value = post.admitCardDate || '';
-            document.getElementById('examDate').value = post.examDate || '';
-            document.getElementById('resultDate').value = post.resultDate || '';
-            document.getElementById('answerKeyDate').value = post.answerKeyDate || '';
-            document.getElementById('totalVacancies').value = post.totalVacancies || '';
-            document.getElementById('maleVacancies').value = post.maleVacancies || '';
-            document.getElementById('femaleVacancies').value = post.femaleVacancies || '';
-            
-            // Populate vacancies
-            const vContainer = document.getElementById('vacancyContainer');
-            vContainer.innerHTML = '';
-            try {
-                const vDetails = typeof post.vacancyDetails === 'string' ? JSON.parse(post.vacancyDetails || '[]') : post.vacancyDetails;
-                if (Array.isArray(vDetails) && vDetails.length > 0) {
-                    vDetails.forEach(v => addVacancyRow(v.post || v.dept, v.total || (parseInt(v.male || 0) + parseInt(v.female || 0))));
-                } else {
-                    addVacancyRow();
-                }
-            } catch (e) { addVacancyRow(); }
-
-            // Populate links
-            const container = document.getElementById('linksContainer');
-            container.innerHTML = '';
-            const links = post.importantLinks || [];
-            if (links.length > 0) {
-                links.forEach(link => addLinkRow(link.label, link.url));
-            } else {
-                addLinkRow();
-            }
-            
-            document.getElementById('modalTitle').innerText = 'Edit Post';
-            document.getElementById('postModal').style.display = 'flex';
+            document.body.style.overflow = 'auto';
         }
 
         async function deletePost(id) {
-            if (confirm('Are you sure you want to delete this post?')) {
+            if (confirm('Delete this post?')) {
                 const res = await api.deletePost(id);
                 if (res && res.success) fetchPosts();
             }
@@ -494,82 +700,108 @@
 
         document.getElementById('postForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const submitBtn = document.getElementById('submitBtn');
-            const btnText = document.getElementById('btnText');
-            const btnSpinner = document.getElementById('btnSpinner');
-
-            // Set loading state
-            submitBtn.disabled = true;
-            btnText.innerText = 'Processing...';
-            btnSpinner.style.display = 'inline-block';
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.disabled = true;
 
             try {
                 const id = document.getElementById('postId').value;
                 const formData = new FormData();
-                
                 formData.append('title', document.getElementById('title').value);
                 formData.append('category', document.getElementById('category').value);
                 formData.append('department', document.getElementById('department').value);
                 formData.append('description', document.getElementById('description').value);
-                formData.append('applyStartDate', document.getElementById('applyStartDate').value);
-                formData.append('lastDate', document.getElementById('lastDate').value);
                 formData.append('scheduledAt', document.getElementById('scheduledAt').value);
-                formData.append('importantLinks', getLinksAsJson());
-                formData.append('applicationFees', getFeesAsString());
+                formData.append('applicationFees', JSON.stringify(getFeesData()));
                 formData.append('paymentMode', document.getElementById('paymentMode').value);
-                formData.append('ageLimit', document.getElementById('ageLimit').value);
-                formData.append('eligibility', getEligibility());
-                formData.append('examMode', document.getElementById('examMode').value);
-                formData.append('admitCardDate', document.getElementById('admitCardDate').value);
-                formData.append('examDate', document.getElementById('examDate').value);
-                formData.append('resultDate', document.getElementById('resultDate').value);
-                formData.append('answerKeyDate', document.getElementById('answerKeyDate').value);
-                formData.append('totalVacancies', document.getElementById('totalVacancies').value);
-                formData.append('maleVacancies', document.getElementById('maleVacancies').value);
-                formData.append('femaleVacancies', document.getElementById('femaleVacancies').value);
-                formData.append('vacancyDetails', getVacancyAsJson());
+                formData.append('minAge', document.getElementById('minAge').value);
+                formData.append('maxAge', document.getElementById('maxAge').value);
+                formData.append('ageRelaxation', document.getElementById('ageRelaxation').value);
+                formData.append('officialWebsite', document.getElementById('officialWebsite').value);
+                formData.append('payScale', document.getElementById('payScale').value);
+                formData.append('vacancyTableTitle', document.getElementById('vacancyTableTitle').value);
+                formData.append('slug', document.getElementById('slug').value);
+                formData.append('metaTitle', document.getElementById('metaTitle').value);
+                formData.append('metaDescription', document.getElementById('metaDescription').value);
+                formData.append('focusKeyword', document.getElementById('focusKeyword').value);
+                formData.append('relatedKeywords', JSON.stringify(document.getElementById('relatedKeywords').value.split(',').map(s => s.trim()).filter(s => s)));
 
-                let res;
-                if (id) {
-                    res = await api.updatePost(id, formData);
-                } else {
-                    res = await api.createPost(formData);
-                }
+                formData.append('dynamicDates', JSON.stringify(getDynamicData('datesContainer', [{key:'label', class:'.d-label'}, {key:'value', class:'.d-value'}])));
+                formData.append('vacancyDetails', JSON.stringify(getDynamicData('vacancyContainer', [{key:'post', class:'.v-post'}, {key:'total', class:'.v-total'}, {key:'eligibility', class:'.v-elig'}])));
+                formData.append('eligibilityPoints', JSON.stringify(getDynamicData('eligibilityContainer', [{key:'value', class:'.e-point'}])));
+                formData.append('howToApplySteps', JSON.stringify(getDynamicData('howToApplyContainer', [{key:'value', class:'.h-step'}])));
+                formData.append('selectionProcessSteps', JSON.stringify(getDynamicData('selectionContainer', [{key:'value', class:'.s-point'}])));
+                formData.append('importantLinks', JSON.stringify(getDynamicData('linksContainer', [{key:'label', class:'.link-label'}, {key:'url', class:'.link-url'}])));
+                formData.append('customSections', JSON.stringify(getCustomSectionsData()));
 
-                if (res && res.success) {
-                    closeModal();
-                    await fetchPosts();
-                    // Show small success alert
-                    alert(id ? 'Post updated successfully!' : 'Post created successfully!');
-                } else {
-                    alert(res ? res.message : 'Operation failed');
-                }
-            } catch (err) {
-                console.error('Submit error:', err);
-                alert('Something went wrong. Please try again.');
-            } finally {
-                // Reset loading state
-                submitBtn.disabled = false;
-                btnText.innerText = 'Save Post';
-                btnSpinner.style.display = 'none';
-            }
+                let res = id ? await api.updatePost(id, formData) : await api.createPost(formData);
+                if (res && res.success) { closeModal(); fetchPosts(); alert('Saved!'); }
+                else alert('Error: ' + (res ? res.message : 'Unknown'));
+            } catch (err) { alert('Failed to save.'); } finally { saveBtn.disabled = false; }
         });
+
+        // AI WIZARD
+
+        function openAIWizard() {
+            document.getElementById('aiJsonInput').value = '';
+            document.getElementById('aiWizardModal').style.display = 'flex';
+        }
+
+        function closeAIWizard() {
+            document.getElementById('aiWizardModal').style.display = 'none';
+        }
+
+        function copyExpertPrompt() {
+            const prompt = `You are an expert SEO automation system. Generate JSON for a job post with: title, metaTitle, metaDescription, focusKeyword, relatedKeywords (array), slug, category, introduction, minAge, maxAge, ageRelaxation, vacancyTableTitle, importantDates (label: value), applicationFee (Cat: Amt), vacancyDetails ({post, total, eligibility}), eligibilityPoints, howToApply, selectionProcess, importantLinks ({label, url}). Topic: `;
+            navigator.clipboard.writeText(prompt); alert('SEO Prompt copied!');
+        }
+
+        function processAIJson() {
+            const input = document.getElementById('aiJsonInput').value;
+            if (!input.trim()) return;
+            try {
+                const data = JSON.parse(input); closeAIWizard(); openModal();
+                if (data.title) { document.getElementById('title').value = data.title; generateSlug(data.title); }
+                if (data.metaTitle) document.getElementById('metaTitle').value = data.metaTitle;
+                if (data.metaDescription) document.getElementById('metaDescription').value = data.metaDescription;
+                if (data.focusKeyword) document.getElementById('focusKeyword').value = data.focusKeyword;
+                if (data.relatedKeywords) document.getElementById('relatedKeywords').value = Array.isArray(data.relatedKeywords) ? data.relatedKeywords.join(', ') : data.relatedKeywords;
+                if (data.slug) document.getElementById('slug').value = data.slug;
+                if (data.category) document.getElementById('category').value = data.category;
+                if (data.introduction) document.getElementById('description').value = data.introduction;
+                if (data.minAge) document.getElementById('minAge').value = data.minAge;
+                if (data.maxAge) document.getElementById('maxAge').value = data.maxAge;
+                if (data.ageRelaxation) document.getElementById('ageRelaxation').value = data.ageRelaxation;
+                if (data.vacancyTableTitle) document.getElementById('vacancyTableTitle').value = data.vacancyTableTitle;
+
+                if (Array.isArray(data.importantDates)) {
+                    document.getElementById('datesContainer').innerHTML = '';
+                    data.importantDates.forEach(d => { const p = d.split(':'); addDateRow(p[0]?.trim(), p.slice(1).join(':').trim()); });
+                }
+                if (Array.isArray(data.applicationFee)) {
+                    document.getElementById('feesContainer').innerHTML = '';
+                    data.applicationFee.forEach(f => { const p = f.split(':'); addFeeGroupRow({ categories: p[0].split(/[\/,]/).map(s => s.trim()), amount: p[1]?.trim() }); });
+                }
+                if (Array.isArray(data.vacancyDetails)) {
+                    document.getElementById('vacancyContainer').innerHTML = '';
+                    data.vacancyDetails.forEach(v => addVacancyRow(v.post || v.postName, v.total || v.totalPost, v.eligibility));
+                }
+                if (Array.isArray(data.eligibilityPoints)) { document.getElementById('eligibilityContainer').innerHTML = ''; data.eligibilityPoints.forEach(p => addEligibilityRow(p)); }
+                if (Array.isArray(data.howToApply)) { document.getElementById('howToApplyContainer').innerHTML = ''; data.howToApply.forEach(s => addHowToApplyRow(s)); }
+                if (Array.isArray(data.selectionProcess)) { document.getElementById('selectionContainer').innerHTML = ''; data.selectionProcess.forEach(p => addSelectionRow(p)); }
+                if (Array.isArray(data.importantLinks)) { document.getElementById('linksContainer').innerHTML = ''; data.importantLinks.forEach(l => addLinkRow(l.label || l.name, l.url)); }
+                alert('SEO Data Loaded!');
+            } catch (err) { alert('Invalid JSON.'); }
+        }
+
+        async function checkUrlParams() {
+            await fetchPosts();
+            const urlParams = new URLSearchParams(window.location.search);
+            const editId = urlParams.get('edit');
+            if (editId) openModal(editId);
+        }
 
         document.getElementById('searchInput').addEventListener('input', fetchPosts);
         document.getElementById('categoryFilter').addEventListener('change', fetchPosts);
-
-        // Auto-open edit modal if ID is in URL
-        async function checkUrlParams() {
-            await fetchPosts(); // Ensure posts are loaded first
-            const urlParams = new URLSearchParams(window.location.search);
-            const editId = urlParams.get('edit');
-            if (editId) {
-                editPost(editId);
-                // Clean up URL without refreshing
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-        }
-
         checkUrlParams();
     </script>
 </body>
